@@ -7,6 +7,7 @@ export default new Vuex.Store({
   state: {
     accessToken: '',
     albums: [],
+    nextUrl: '',
   },
   mutations: {
     changeAccessToken(state, payload) {
@@ -15,16 +16,34 @@ export default new Vuex.Store({
     changeAlbums(state, payload) {
       state.albums = payload.albums;
     },
+    changeNextUrl(state, payload) {
+      state.nextUrl = payload.next;
+    },
   },
   actions: {
-    async findAlbums({ commit, store }, name) {
-      const response = fetch(`https://api.spotify.com/v1/search?q=${name}&type=album&limit=10`, {
+    async findAlbums({ commit, state }, name) {
+      const response = await fetch(
+        `https://api.spotify.com/v1/search?q=${name}&type=album&limit=10`,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${state.accessToken}`,
+          },
+        }
+      );
+      const body = await response.json();
+      commit('changeAlbums', { albums: body.albums.items });
+      commit('changeNextUrl', { next: body.albums.next });
+    },
+    async nextAlbums({ commit, state }) {
+      const response = await fetch(`${state.nextUrl}`, {
         method: 'GET',
         headers: {
-          Authorization: `Basic ${store.accessToken}`,
+          Authorization: `Bearer ${state.accessToken}`,
         },
       });
-      commit('changeAlbums', { albums: response.body });
+      const body = await response.json();
+      commit('changeAlbums', { albums: body.albums.items });
     },
   },
 });

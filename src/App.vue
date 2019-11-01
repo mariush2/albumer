@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app dark>
     <router-view></router-view>
   </v-app>
 </template>
@@ -31,5 +31,6 @@ export default {
 
 #app {
   font-family: 'Comfortaa', sans-serif;
+  background: #b65b6b;
 }
 </style>

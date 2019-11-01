@@ -1,9 +1,8 @@
 <template>
   <v-content>
     <v-container fluid fill-height>
-      <v-layout align-center justify-center>
-        <Searchbar placeholder="Find an album..." />
-      </v-layout>
+      <h1>Find your next album</h1>
+      <Searchbar placeholder="Find an album..." />
     </v-container>
   </v-content>
 </template>
