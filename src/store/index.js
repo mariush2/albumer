@@ -8,6 +8,7 @@ export default new Vuex.Store({
     accessToken: '',
     albums: [],
     nextUrl: '',
+    searching: false,
   },
   mutations: {
     changeAccessToken(state, payload) {
@@ -18,6 +19,9 @@ export default new Vuex.Store({
     },
     changeNextUrl(state, payload) {
       state.nextUrl = payload.next;
+    },
+    changeSearching(state, payload) {
+      state.searching = payload.searching;
     },
   },
   actions: {
@@ -32,8 +36,16 @@ export default new Vuex.Store({
         }
       );
       const body = await response.json();
-      commit('changeAlbums', { albums: body.albums.items });
-      commit('changeNextUrl', { next: body.albums.next });
+      if (body.albums && body.albums.items.length === 0) {
+        body.albums.items.push('none');
+      }
+      try {
+        commit('changeAlbums', { albums: body.albums.items });
+        commit('changeNextUrl', { next: body.albums.next });
+        commit('changeSearching', { searching: false });
+      } catch (e) {
+        console.error(e);
+      }
     },
     async nextAlbums({ commit, state }) {
       const response = await fetch(`${state.nextUrl}`, {
@@ -44,6 +56,9 @@ export default new Vuex.Store({
       });
       const body = await response.json();
       commit('changeAlbums', { albums: body.albums.items });
+    },
+    setSearching({ commit }) {
+      commit('changeSearching', { searching: true });
     },
   },
 });
