@@ -1,7 +1,11 @@
 <template>
-  <div class="home">
-    <Searchbar placeholder="Find an album..." />
-  </div>
+  <v-content>
+    <v-container fluid fill-height>
+      <v-layout align-center justify-center>
+        <Searchbar placeholder="Find an album..." />
+      </v-layout>
+    </v-container>
+  </v-content>
 </template>
 
 <script>

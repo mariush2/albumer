@@ -7,10 +7,10 @@ import vuetify from './plugins/vuetify';
 import 'roboto-fontface/css/roboto/roboto-fontface.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 
-Vue.config.productionTip = false; // Setup accessToken to Spotify
+Vue.config.productionTip = false;
 
-const accessToken =
-  'BQDX7fd_2xlmbe5Sb0pEA4y1X-0kEgOZQXMvvRDUPi3oZs7Aw88v9bEheT1JHobteilEULOmxmAbVhSQdV0';
+// Setup accessToken to Spotify
+const accessToken = 'ACCESS_TOKEN';
 
 store.commit('changeAccessToken', accessToken);
 

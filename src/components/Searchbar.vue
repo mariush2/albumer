@@ -1,5 +1,5 @@
 <template>
-  <v-text-field v-model="name" placeholder="placeholder" />
+  <v-text-field v-model="name" :placeholder="placeholder" />
 </template>
 
 <script>
@@ -10,6 +10,11 @@ export default {
       type: String,
       required: true,
     },
+  },
+  data: function() {
+    return {
+      name: '',
+    };
   },
 };
 </script>
