@@ -9,10 +9,7 @@ import '@fortawesome/fontawesome-free/css/all.css';
 
 Vue.config.productionTip = false;
 
-// Setup accessToken to Spotify
-const accessToken = 'ACCESS_TOKEN';
-
-store.commit('changeAccessToken', { token: accessToken });
+store.dispatch('refreshAccessToken');
 
 new Vue({
   router,

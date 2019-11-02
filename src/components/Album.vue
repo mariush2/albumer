@@ -1,5 +1,5 @@
 <template>
-  <v-card light elevation="0" width="100%" max-width="450px">
+  <v-card light elevation="0" min-width="360px" max-width="450px">
     <div class="album-content">
       <v-avatar class="album-image ma-3" size="125" tile>
         <v-img :src="album.images[0].url"></v-img>
@@ -38,15 +38,13 @@ export default {
 .album-content {
   display: grid;
   grid-template-columns: 1fr 2fr;
+  width: 100%;
 }
 
 .album-text {
   padding: 12px;
-
-  > .album-name,
-  .album-artist {
-    width: 15rem;
-  }
+  max-width: 100%;
+  min-width: 0;
 
   > .album-name {
     font-weight: 600;

@@ -16,7 +16,7 @@
           <template v-for="i in 5">
             <v-expand-transition :key="`${i}-skeleton-album`">
               <v-row class="ma-2" justify="center" align="center">
-                <v-skeleton-loader light width="100%" max-width="450px" type="article" />
+                <v-skeleton-loader light min-width="360px" max-width="450px" type="article" />
               </v-row>
             </v-expand-transition>
           </template>

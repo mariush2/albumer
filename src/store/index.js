@@ -25,6 +25,15 @@ export default new Vuex.Store({
     },
   },
   actions: {
+    async refreshAccessToken({ commit, state }) {
+      const response = await fetch('http://localhost:3005/spotify/token');
+      const body = await response.json();
+      try {
+        commit('changeAccessToken', { token: body.access_token });
+      } catch (e) {
+        console.error(e);
+      }
+    },
     async findAlbums({ commit, state }, name) {
       const response = await fetch(
         `https://api.spotify.com/v1/search?q=${name}&type=album&limit=10`,
