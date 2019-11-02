@@ -1,6 +1,6 @@
 <template>
   <v-content>
-    <v-container fluid fill-height>
+    <v-container fluid>
       <v-row>
         <v-container>
           <v-row justify="center" align="center">
@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 
 import Album from '@/components/Album.vue';
 import Searchbar from '@/components/Searchbar.vue';
@@ -73,6 +73,25 @@ export default {
       this.previousLength = this.albums.length;
       this.started = false;
     },
+  },
+  created() {
+    // Attach event listener to html-tag
+    window.addEventListener('scroll', this.onScroll);
+  },
+  destroyed() {
+    window.removeEventListener('scroll', this.onScroll);
+  },
+  methods: {
+    onScroll({
+      target: {
+        scrollingElement: { scrollTop, clientHeight, scrollHeight },
+      },
+    }) {
+      if (scrollTop + clientHeight >= scrollHeight) {
+        this.nextAlbums();
+      }
+    },
+    ...mapActions(['nextAlbums']),
   },
 };
 </script>

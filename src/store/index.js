@@ -14,6 +14,9 @@ export default new Vuex.Store({
     changeAccessToken(state, payload) {
       state.accessToken = payload.token;
     },
+    addAlbums(state, payload) {
+      state.albums.push(...payload.albums);
+    },
     changeAlbums(state, payload) {
       state.albums = payload.albums;
     },
@@ -64,7 +67,18 @@ export default new Vuex.Store({
         },
       });
       const body = await response.json();
-      commit('changeAlbums', { albums: body.albums.items });
+      const newAlbums = body.albums.items;
+      let adding = [];
+      const currentLength = state.albums.length;
+      const last10 = state.albums.slice(currentLength - 10, currentLength).map(album => album.id);
+      for (let album of newAlbums) {
+        if (!last10.includes(album.id)) {
+          adding.push(album);
+        } else {
+          break;
+        }
+      }
+      if (adding.length > 0) commit('addAlbums', { albums: adding });
     },
     setSearching({ commit }) {
       commit('changeSearching', { searching: true });
