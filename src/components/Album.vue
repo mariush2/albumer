@@ -1,5 +1,5 @@
 <template>
-  <v-card light elevation="0" min-width="360px" max-width="450px">
+  <v-card light elevation="0" min-width="360px" width="100%" max-width="450px">
     <div class="album-content">
       <v-avatar class="album-image ma-3" size="125" tile>
         <v-img :src="album.images[0].url"></v-img>
@@ -13,7 +13,7 @@
         <div class="album-info">
           {{ album.release_date.substring(0, 4) }}, {{ album.total_tracks }} songs
         </div>
-        <v-btn text block small class="mt-4">
+        <v-btn text block elevation="0" small class="mt-4">
           <v-icon left>fa-plus</v-icon>
           Add to list
         </v-btn>
@@ -37,7 +37,7 @@ export default {
 <style lang="scss" scoped>
 .album-content {
   display: grid;
-  grid-template-columns: 1fr 2fr;
+  grid-template-columns: 1fr 4fr;
   width: 100%;
 }
 
@@ -65,5 +65,10 @@ export default {
     font-size: 14px;
     font-weight: 200;
   }
+}
+
+.album-image {
+  box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
 }
 </style>
