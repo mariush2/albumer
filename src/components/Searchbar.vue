@@ -36,8 +36,9 @@ export default {
   },
   watch: {
     searchString: function() {
-      this.setSearching();
       if (this.searchString && this.searchString.length > 0) {
+        this.startSearching();
+        this.setEmptyAlbums();
         this.callAPI();
       }
     },
@@ -46,7 +47,7 @@ export default {
     callAPI: debounce(function() {
       this.findAlbums(this.searchString);
     }, searchDelay),
-    ...mapActions(['findAlbums', 'setSearching']),
+    ...mapActions(['findAlbums', 'startSearching', 'setEmptyAlbums']),
   },
 };
 </script>

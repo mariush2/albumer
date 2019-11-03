@@ -9,6 +9,8 @@ export default new Vuex.Store({
     albums: [],
     nextUrl: '',
     searching: false,
+    limit: 20,
+    foundAll: false,
   },
   mutations: {
     changeAccessToken(state, payload) {
@@ -16,6 +18,9 @@ export default new Vuex.Store({
     },
     addAlbums(state, payload) {
       state.albums.push(...payload.albums);
+    },
+    emptyAlbums(state) {
+      state.albums = new Array(state.limit).fill(0);
     },
     changeAlbums(state, payload) {
       state.albums = payload.albums;
@@ -25,6 +30,9 @@ export default new Vuex.Store({
     },
     changeSearching(state, payload) {
       state.searching = payload.searching;
+    },
+    changeFoundAll(state, payload) {
+      state.foundAll = payload.found;
     },
   },
   actions: {
@@ -39,7 +47,9 @@ export default new Vuex.Store({
     },
     async findAlbums({ commit, state }, name) {
       const response = await fetch(
-        `https://api.spotify.com/v1/search?q=${name}&type=album&limit=10`,
+        `https://api.spotify.com/v1/search?q="${name.replace(/\s+/g, '%20')}"&type=album&limit=${
+          state.limit
+        }`,
         {
           method: 'GET',
           headers: {
@@ -51,15 +61,15 @@ export default new Vuex.Store({
       if (body.albums && body.albums.items.length === 0) {
         body.albums.items.push('none');
       }
-      try {
-        commit('changeAlbums', { albums: body.albums.items });
-        commit('changeNextUrl', { next: body.albums.next });
-        commit('changeSearching', { searching: false });
-      } catch (e) {
-        console.error(e);
-      }
+      commit('changeAlbums', { albums: body.albums.items });
+      commit('changeNextUrl', { next: body.albums.next });
+      commit('changeFoundAll', { found: false });
+      commit('changeSearching', { searching: false });
     },
     async nextAlbums({ commit, state }) {
+      if (state.foundAll) {
+        return;
+      }
       const response = await fetch(`${state.nextUrl}`, {
         method: 'GET',
         headers: {
@@ -70,18 +80,38 @@ export default new Vuex.Store({
       const newAlbums = body.albums.items;
       let adding = [];
       const currentLength = state.albums.length;
-      const last10 = state.albums.slice(currentLength - 10, currentLength).map(album => album.id);
+      const currentAlbums = state.albums.map(album => {
+        return {
+          id: album.id,
+          name: album.name,
+        };
+      });
+
       for (let album of newAlbums) {
-        if (!last10.includes(album.id)) {
+        let exists = false;
+        for (let oldAlbum of currentAlbums) {
+          if (album.name === oldAlbum.name && album.id === oldAlbum.id) {
+            exists = true;
+            break;
+          }
+        }
+
+        if (!exists) {
           adding.push(album);
-        } else {
-          break;
         }
       }
-      if (adding.length > 0) commit('addAlbums', { albums: adding });
+      if (adding.length > 0) {
+        commit('addAlbums', { albums: adding });
+        commit('changeNextUrl', { next: body.albums.next });
+      } else {
+        commit('changeFoundAll', { found: true });
+      }
     },
-    setSearching({ commit }) {
+    startSearching({ commit }) {
       commit('changeSearching', { searching: true });
+    },
+    setEmptyAlbums({ commit }) {
+      commit('emptyAlbums');
     },
   },
 });

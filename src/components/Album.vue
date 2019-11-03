@@ -1,5 +1,5 @@
 <template>
-  <v-card light elevation="0" min-width="360px" width="100%" max-width="450px">
+  <v-card light elevation="0" height="150px" min-width="360px" width="100%" max-width="450px">
     <div class="album-content">
       <v-avatar class="album-image ma-3" size="125" tile>
         <v-img :src="album.images[0].url"></v-img>
