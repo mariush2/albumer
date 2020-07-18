@@ -11,6 +11,7 @@ export default new Vuex.Store({
     searching: false,
     limit: 20,
     foundAll: false,
+    isAuthenticated: false,
   },
   mutations: {
     changeAccessToken(state, payload) {

@@ -6,6 +6,8 @@ import vuetify from './plugins/vuetify';
 import './registerServiceWorker';
 import 'roboto-fontface/css/roboto/roboto-fontface.css';
 import '@fortawesome/fontawesome-free/css/all.css';
+// Firebase App (the core Firebase SDK) is always required and
+// must be listed before other Firebase SDKs
 
 Vue.config.productionTip = false;
 
