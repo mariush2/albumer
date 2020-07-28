@@ -35,6 +35,9 @@ export default new Vuex.Store({
     changeFoundAll(state, payload) {
       state.foundAll = payload.found;
     },
+    setAuthenticated(state) {
+      state.isAuthenticated = true;
+    },
   },
   actions: {
     async refreshAccessToken({ commit, state }) {
@@ -107,6 +110,12 @@ export default new Vuex.Store({
       } else {
         commit('changeFoundAll', { found: true });
       }
+    },
+    async setUser({ commit, state }, user) {
+      const expireDate = new Date();
+      expireDate.setDate(expireDate.getDate() + 1);
+      document.cookie = `userPhone=${user.phoneNumber},expires=${expireDate}`;
+      commit('setAuthenticated');
     },
     startSearching({ commit }) {
       commit('changeSearching', { searching: true });

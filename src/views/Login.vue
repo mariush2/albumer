@@ -1,16 +1,21 @@
 <template>
   <v-content>
-    <v-container fill-height fluid>
+    <v-container v-show="loaded" fill-height fluid>
       <v-row class="content-container" justify="center">
         <h1>Get started</h1>
         <p>
           Albumer uses SMS to login. That makes it easier for you and us.
         </p>
         <div class="phone-input">
-          <vue-tel-input v-model="phone" enabled-country-code @country-changed="countryChanged" />
+          <vue-tel-input
+            v-model="phone"
+            enabled-country-code
+            @country-changed="countryChanged"
+            @validate="checkValidPhone"
+          />
         </div>
         <div id="recaptcha-container"></div>
-        <v-btn @click="sendCode">Send Code</v-btn>
+        <v-btn :disabled="!validCaptcha || !validPhone" @click="sendCode">Send Code</v-btn>
       </v-row>
       <v-dialog v-model="showModal" max-width="600px" persistent light>
         <v-card outlined>
@@ -41,17 +46,23 @@
             </div>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn ref="confirmButton" text @click="confirmCode">Confirm Code</v-btn>
+              <v-btn ref="confirmButton" text @click="confirmCode">
+                Confirm Code
+              </v-btn>
             </v-card-actions>
           </v-card-text>
         </v-card>
       </v-dialog>
     </v-container>
+    <v-overlay v-show="!loaded" opacity="0">
+      <v-progress-circular indeterminate size="70"></v-progress-circular>
+    </v-overlay>
   </v-content>
 </template>
 
 <script>
 import { VueTelInput } from 'vue-tel-input';
+import { mapActions } from 'vuex';
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
 
@@ -64,6 +75,9 @@ export default {
     return {
       phone: '',
       dialCode: '',
+      validCaptcha: false,
+      validPhone: false,
+      loaded: false,
       recaptchaVerifier: null,
       confirmationResult: null,
       showModal: false,
@@ -86,12 +100,22 @@ export default {
   },
   mounted() {
     firebase.auth().useDeviceLanguage();
-    this.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container');
+    this.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+      callback: () => {
+        this.validCaptcha = true;
+      },
+    });
     this.recaptchaVerifier.render().then(function(widgetId) {
       window.recaptchaWidgetId = widgetId;
     });
+    setTimeout(() => {
+      this.loaded = true;
+    }, 1000);
   },
   methods: {
+    checkValidPhone(phoneEvent) {
+      this.validPhone = phoneEvent.isValid;
+    },
     changeFocus(event, bringInFocus) {
       if (!this.isNumber(event)) return;
       if (bringInFocus !== this.code.length) {
@@ -122,14 +146,17 @@ export default {
     async confirmCode() {
       this.confirmationResult
         .confirm(this.code.reduce((acc, val) => acc + val))
-        .then(function(result) {
+        .then(result => {
           // User signed in successfully.
-          let user = result.user;
+          console.log(result);
+          console.log(this);
+          this.setUser(result.user);
           console.log('logged in');
           // ...
         })
-        .catch(function(error) {
+        .catch(error => {
           // User couldn't sign in (bad verification code?)
+          console.error(error);
           console.log('bad code');
           // ...
         });
@@ -137,6 +164,7 @@ export default {
     countryChanged(event) {
       this.dialCode = event.dialCode;
     },
+    ...mapActions(['setUser']),
   },
 };
 </script>
@@ -160,6 +188,7 @@ export default {
   #recaptcha-container {
     margin: 1rem auto;
     width: fit-content;
+    height: 74px;
   }
 }
 
