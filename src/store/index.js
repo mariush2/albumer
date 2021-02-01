@@ -12,6 +12,7 @@ export default new Vuex.Store({
     limit: 20,
     foundAll: false,
     isAuthenticated: false,
+    user: {},
   },
   mutations: {
     changeAccessToken(state, payload) {
@@ -34,6 +35,12 @@ export default new Vuex.Store({
     },
     changeFoundAll(state, payload) {
       state.foundAll = payload.found;
+    },
+    setAuthenticated(state) {
+      state.isAuthenticated = true;
+    },
+    setUserObject(state, payload) {
+      state.user = payload.user;
     },
   },
   actions: {
@@ -108,6 +115,23 @@ export default new Vuex.Store({
         commit('changeFoundAll', { found: true });
       }
     },
+    async setUser({ commit, state }, user) {
+      const expireDate = new Date();
+      expireDate.setDate(expireDate.getDate() + 1);
+      document.cookie = `uuid=${user.uid},expires=${expireDate}`;
+      commit('setAuthenticated');
+      commit('setUserObject', { user });
+    },
+    async getUserFromCookie({ commit, state }) {
+      const cookie = getCookie('uuid');
+
+      if (cookie && cookie.length > 0) {
+        cookie.split(',');
+        // Cookie exists, set user
+        commit('setAuthenticated');
+        commit('setUserObject', { user: { uid: cookie[0] } });
+      }
+    },
     startSearching({ commit }) {
       commit('changeSearching', { searching: true });
     },
@@ -116,3 +140,13 @@ export default new Vuex.Store({
     },
   },
 });
+
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2)
+    return parts
+      .pop()
+      .split(';')
+      .shift();
+}
