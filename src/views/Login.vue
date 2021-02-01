@@ -28,10 +28,10 @@
           large
           @click="sendCode"
         >
-          Send Me a Code
+          Send Me An SMS
         </v-btn>
       </v-row>
-      <v-dialog v-model="showModal" max-width="600px" persistent light>
+      <v-dialog v-model="showModal" max-width="600px" persistent eager light>
         <v-card outlined>
           <v-card-title>We've just sent you a text</v-card-title>
           <v-card-text>
@@ -135,7 +135,9 @@ export default {
       else this.phoneInputClass = 'invalid';
     },
     changeFocus(event, bringInFocus) {
-      if (!this.isNumber(event)) return;
+      if (!this.isNumber(event) && event.type !== 'first') {
+        return;
+      }
       if (bringInFocus !== this.code.length) {
         this.$refs[`${bringInFocus}-input`][0].focus();
       } else {
@@ -156,6 +158,8 @@ export default {
           // user in with confirmationResult.confirm(code).
           this.confirmationResult = confirmationResult;
           this.showModal = true;
+          // 50 ms delay to allow the modal to be rendered before we try to change the focus
+          setTimeout(() => this.changeFocus(new Event('first'), 0), 50);
         })
         .catch(error => {
           console.error(error);

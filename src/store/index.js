@@ -123,8 +123,10 @@ export default new Vuex.Store({
       commit('setUserObject', { user });
     },
     async getUserFromCookie({ commit, state }) {
-      const cookie = getCookie('uuid').split(',');
-      if (cookie.length > 0) {
+      const cookie = getCookie('uuid');
+
+      if (cookie && cookie.length > 0) {
+        cookie.split(',');
         // Cookie exists, set user
         commit('setAuthenticated');
         commit('setUserObject', { user: { uid: cookie[0] } });
