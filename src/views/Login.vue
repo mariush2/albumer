@@ -1,5 +1,5 @@
 <template>
-  <v-content>
+  <v-main>
     <v-container v-show="loaded" fill-height fluid>
       <v-row class="content-container" justify="center">
         <h1>Get started</h1>
@@ -10,12 +10,26 @@
           <vue-tel-input
             v-model="phone"
             enabled-country-code
+            valid-characters-only
+            placeholder="Enter your phone number"
+            :input-classes="phoneInputClass"
             @country-changed="countryChanged"
             @validate="checkValidPhone"
           />
+          <v-icon v-show="validPhone" class="icon">fa-check</v-icon>
         </div>
         <div id="recaptcha-container"></div>
-        <v-btn :disabled="!validCaptcha || !validPhone" @click="sendCode">Send Code</v-btn>
+        <v-btn
+          :disabled="!validCaptcha || !validPhone"
+          class="mt-12"
+          color="primary"
+          rounded
+          elevation="0"
+          large
+          @click="sendCode"
+        >
+          Send Me a Code
+        </v-btn>
       </v-row>
       <v-dialog v-model="showModal" max-width="600px" persistent light>
         <v-card outlined>
@@ -26,15 +40,16 @@
             </p>
             <div class="code-grid">
               <template v-for="(digit, index) in code">
-                <input
-                  :key="`${index}-input`"
-                  :ref="`${index}-input`"
-                  v-model="code[index]"
-                  class="digit-input"
-                  maxlength="1"
-                  type="number"
-                  @keyup="changeFocus($event, index + 1)"
-                />
+                <label :key="`${index}-code-input`">
+                  <input
+                    :ref="`${index}-input`"
+                    v-model="code[index]"
+                    class="digit-input"
+                    maxlength="1"
+                    type="number"
+                    @keyup="changeFocus($event, index + 1)"
+                  />
+                </label>
                 <div
                   v-if="index !== code.length - 1"
                   :key="`${index}-divider`"
@@ -46,7 +61,7 @@
             </div>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn ref="confirmButton" text @click="confirmCode">
+              <v-btn ref="confirmButton" color="primary" text @click="confirmCode">
                 Confirm Code
               </v-btn>
             </v-card-actions>
@@ -57,7 +72,7 @@
     <v-overlay v-show="!loaded" opacity="0">
       <v-progress-circular indeterminate size="70"></v-progress-circular>
     </v-overlay>
-  </v-content>
+  </v-main>
 </template>
 
 <script>
@@ -77,6 +92,7 @@ export default {
       dialCode: '',
       validCaptcha: false,
       validPhone: false,
+      phoneInputClass: 'invalid',
       loaded: false,
       recaptchaVerifier: null,
       confirmationResult: null,
@@ -115,6 +131,8 @@ export default {
   methods: {
     checkValidPhone(phoneEvent) {
       this.validPhone = phoneEvent.isValid;
+      if (this.validPhone) this.phoneInputClass = 'valid';
+      else this.phoneInputClass = 'invalid';
     },
     changeFocus(event, bringInFocus) {
       if (!this.isNumber(event)) return;
@@ -148,17 +166,11 @@ export default {
         .confirm(this.code.reduce((acc, val) => acc + val))
         .then(result => {
           // User signed in successfully.
-          console.log(result);
-          console.log(this);
           this.setUser(result.user);
-          console.log('logged in');
-          // ...
         })
         .catch(error => {
           // User couldn't sign in (bad verification code?)
           console.error(error);
-          console.log('bad code');
-          // ...
         });
     },
     countryChanged(event) {
@@ -194,13 +206,19 @@ export default {
 
 .phone-input {
   max-width: 500px;
-  margin: auto;
-  margin-bottom: 50px;
+  margin: auto auto 50px;
+  display: grid;
+  grid-template-columns: 1fr 0;
+
+  > .icon {
+    margin-left: 20px;
+    color: hsl(136deg 65% 58%);
+  }
 
   > .vue-tel-input {
     background: white;
-    color: black;
   }
+
   .vti__dropdown {
     border-right: 1px solid grey;
   }

@@ -1,5 +1,5 @@
 <template>
-  <v-app light>
+  <v-app>
     <template v-if="isAuthenticated">
       <router-view></router-view>
     </template>
@@ -44,7 +44,8 @@ export default {
   font-weight: 500;
 }
 
-#app {
+#app,
+body {
   font-family: 'Comfortaa', sans-serif;
   background: #b65b6b;
 }

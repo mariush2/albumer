@@ -2,7 +2,7 @@
   <v-card light elevation="0" height="150px" min-width="360px" width="100%" max-width="450px">
     <div class="album-content">
       <v-avatar class="album-image ma-3" size="125" tile>
-        <v-img :src="album.images[0].url"></v-img>
+        <v-img class="rounded" :src="album.images[0].url"></v-img>
       </v-avatar>
       <div class="album-text">
         <div class="album-name text-truncate">{{ album.name }}</div>
@@ -69,6 +69,5 @@ export default {
 
 .album-image {
   box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
 }
 </style>
