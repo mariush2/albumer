@@ -1,25 +1,27 @@
 <template>
-  <v-card light elevation="0" height="150px" min-width="360px" width="100%" max-width="450px">
-    <div class="album-content">
-      <v-avatar class="album-image ma-3" size="125" tile>
-        <v-img class="rounded" :src="album.images[0].url"></v-img>
-      </v-avatar>
-      <div class="album-text">
-        <div class="album-name text-truncate">{{ album.name }}</div>
-        <div class="album-artist text-truncate">
-          by
-          <span>{{ album.artists[0].name }}</span>
+  <el-card shadow="never" class="card">
+    <div class="card-body">
+      <div class="album-image">
+        <el-image fit="fill" :src="album.images[0].url" />
+      </div>
+      <div class="album-content">
+        <div class="album-title">
+          <h2>{{ album.name }}</h2>
+        </div>
+        <div class="album-artist">
+          <h3>by {{ album.artists[0].name }}</h3>
         </div>
         <div class="album-info">
-          {{ album.release_date.substring(0, 4) }}, {{ album.total_tracks }} songs
+          <h5>
+            {{ album.release_date.substring(0, 4) }}
+            <br />
+            {{ album.total_tracks }} tracks
+          </h5>
         </div>
-        <v-btn text block elevation="0" small class="mt-4">
-          <v-icon left>fa-plus</v-icon>
-          Add to list
-        </v-btn>
+        <el-button class="add-button" icon="el-icon-plus">Add</el-button>
       </div>
     </div>
-  </v-card>
+  </el-card>
 </template>
 
 <script>
@@ -31,43 +33,64 @@ export default {
       required: true,
     },
   },
+  methods: {
+    getFontSize(textLength) {
+      const baseSize = 9;
+      if (textLength >= baseSize) {
+        textLength = baseSize - 2;
+      }
+      const fontSize = baseSize - textLength;
+      return `${fontSize}vw`;
+    },
+  },
 };
 </script>
 
 <style lang="scss" scoped>
-.album-content {
+.card-body {
   display: grid;
-  grid-template-columns: 1fr 4fr;
+  grid-template-columns: 1fr 3fr;
+  position: relative;
+}
+
+.card {
+  max-width: 500px;
   width: 100%;
+  padding: 0;
+  position: relative;
 }
 
-.album-text {
-  padding: 12px;
-  max-width: 100%;
-  min-width: 0;
-
-  > .album-name {
-    font-weight: 600;
-    font-size: 18px;
-  }
-
-  > .album-artist {
-    font-weight: 200;
-    font-size: 14px;
-
-    > span {
-      font-weight: 400;
-      font-size: 16px;
-    }
-  }
-
-  > .album-info {
-    font-size: 14px;
-    font-weight: 200;
-  }
+.add-button {
+  width: 100%;
+  position: absolute;
+  bottom: 0;
 }
 
+h2,
+h3,
+h5 {
+  margin: 0;
+  font-size: 100%;
+}
+.album-content {
+  margin-left: 1rem;
+  height: 100%;
+  position: relative;
+}
 .album-image {
-  box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.1);
+  width: 165px;
+  height: 165px;
+  box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.2);
+}
+.album-title {
+  width: 100%;
+  margin-bottom: 5px;
+}
+.album-artist {
+  width: 100%;
+  margin-bottom: 5px;
+}
+.album-info {
+  width: 100%;
 }
 </style>

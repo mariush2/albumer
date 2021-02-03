@@ -1,50 +1,45 @@
 <template>
-  <v-main>
-    <v-container fluid>
-      <v-row>
-        <v-container>
-          <v-row justify="center" align="center">
-            <h1>Find your next album</h1>
-          </v-row>
-          <v-row justify="center" align="center">
-            <Searchbar placeholder="Find an album..." />
-          </v-row>
-        </v-container>
-      </v-row>
-      <template>
-        <v-row justify="center" align="center">
-          <div class="album-grid">
-            <template v-for="album in albums">
-              <v-skeleton-loader
-                :key="album.id"
-                light
-                min-width="360px"
-                width="100%"
-                max-width="450px"
-                type="article"
-                transition="fade"
-                :loading="searching"
-              >
-                <Album :album="album" />
-              </v-skeleton-loader>
-            </template>
-          </div>
-        </v-row>
+  <div>
+    <div class="header">
+      <h1>Find your next album</h1>
+      <Searchbar placeholder="Find an album..." />
+    </div>
+    <div>
+      <template v-if="searching">
+        <div class="album-grid">
+          <template v-for="index in 8">
+            <Album-skeleton :key="index" />
+          </template>
+        </div>
       </template>
-    </v-container>
-  </v-main>
+      <template v-else-if="albums[0] != 'none'">
+        <div class="album-grid">
+          <template v-for="album in albums">
+            <Album :key="album.id" :album="album" />
+          </template>
+        </div>
+      </template>
+      <template v-else>
+        <div class="result">
+          <h1 class="result-text">Couldn't find any albums</h1>
+        </div>
+      </template>
+    </div>
+  </div>
 </template>
 
 <script>
 import { mapState, mapActions } from 'vuex';
 
 import Album from '@/components/Album.vue';
+import AlbumSkeleton from '@/components/AlbumSkeleton.vue';
 import Searchbar from '@/components/Searchbar.vue';
 
 export default {
   name: 'Home',
   components: {
     Album,
+    AlbumSkeleton,
     Searchbar,
   },
   computed: mapState({
@@ -78,11 +73,26 @@ export default {
   display: grid;
   grid-template-columns: 1fr;
   grid-gap: 12px;
+  justify-items: center;
+  width: fit-content;
+  margin: auto;
 }
 
-.result-text {
+.result {
+  margin: auto;
   text-align: center;
+}
+.result-text {
+  display: inline-block;
   font-size: 24px;
+  color: white;
+}
+
+.header {
+  text-align: center;
+  color: white;
+  margin: auto;
+  margin-bottom: 2rem;
 }
 
 @media (min-width: 1000px) {

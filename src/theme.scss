@@ -1,0 +1,41 @@
+/* theme color */
+$--color-primary: #e04875;
+$--color-success: #48e06e;
+$--color-warning: #f29e5a;
+$--color-danger: #f97878;
+
+/* icon font path, required */
+$--font-path: '~element-ui/lib/theme-chalk/fonts';
+
+@import '~element-ui/packages/theme-chalk/src/index';
+
+@font-face {
+  font-family: 'Comfortaa';
+  src: url('~@/assets/fonts/Comfortaa-Regular.ttf') format('truetype');
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'Comfortaa';
+  src: url('~@/assets/fonts/Comfortaa-Light.ttf') format('truetype');
+  font-weight: 200;
+}
+
+@font-face {
+  font-family: 'Comfortaa';
+  src: url('~@/assets/fonts/Comfortaa-Bold.ttf') format('truetype');
+  font-weight: 500;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+}
+.el-picker-panel__body-wrapper {
+  font-family: Comfortaa, sans-serif;
+}

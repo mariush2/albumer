@@ -1,14 +1,12 @@
 <template>
-  <div>
-    <v-text-field
+  <div class="search-input-div">
+    <el-input
       v-model="searchString"
       :placeholder="placeholder"
+      size="large"
       clearable
-      flat
-      solo
-      light
-      elevation="0"
-      prepend-inner-icon="fa-search"
+      autofocus
+      prefix-icon="el-icon-search"
     />
   </div>
 </template>
@@ -51,3 +49,10 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.search-input-div {
+  max-width: 500px;
+  margin: auto;
+}
+</style>

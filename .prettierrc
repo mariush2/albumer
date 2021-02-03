@@ -1,6 +1,6 @@
 {
-  trailingComma: "es5",
-  singleQuote: true,
-  htmlWhitespaceSensitivity: "ignore",
-  printWidth: 100
+  "trailingComma": "es5",
+  "singleQuote": true,
+  "htmlWhitespaceSensitivity": "ignore",
+  "printWidth": 100
 }

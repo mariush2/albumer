@@ -1,27 +1,12 @@
 <template>
-  <v-app>
-    <template v-if="isAuthenticated">
-      <router-view></router-view>
-    </template>
-    <template v-else>
-      <Login />
-    </template>
-  </v-app>
+  <div id="app">
+    <router-view></router-view>
+  </div>
 </template>
 
 <script>
-import { mapState } from 'vuex';
-
-import Login from './views/Login.vue';
-
 export default {
   name: 'App',
-  components: {
-    Login,
-  },
-  computed: mapState({
-    isAuthenticated: state => state.isAuthenticated,
-  }),
 };
 </script>
 
@@ -46,7 +31,7 @@ export default {
 
 #app,
 body {
-  font-family: 'Comfortaa', sans-serif;
+  font-family: 'Comfortaa', sans-serif !important;
   background: #b65b6b;
 }
 </style>

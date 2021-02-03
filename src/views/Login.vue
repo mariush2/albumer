@@ -1,85 +1,84 @@
 <template>
-  <v-main>
-    <v-container v-show="loaded" fill-height fluid>
-      <v-row class="content-container" justify="center">
-        <h1>Get started</h1>
-        <p>
-          Albumer uses SMS to login. That makes it easier for you and us.
+  <div>
+    <div class="content-container">
+      <h1>Get started</h1>
+      <p>
+        Albumer uses SMS to login. That makes it easier for you and us.
+      </p>
+      <div class="phone-input">
+        <vue-tel-input
+          v-model="phone"
+          enabled-country-code
+          valid-characters-only
+          mode="international"
+          placeholder="Enter your phone number"
+          :input-classes="phoneInputClass"
+          @validate="checkValidPhone"
+        />
+        <i v-show="validPhone" class="el-icon-check" />
+      </div>
+      <div id="recaptcha-container"></div>
+      <el-button
+        ref="sendButton"
+        :disabled="!validPhone || !validReCaptcha"
+        type="success"
+        plain
+        @click="sendCode"
+      >
+        Send Me An SMS
+      </el-button>
+    </div>
+    <el-dialog
+      :visible="confirmationResult != null"
+      title="We've just sent you a text"
+      custom-class="code-dialog"
+      :show-close="false"
+      width="500px"
+      top="0"
+      append-to-body
+    >
+      <span>
+        <p style="width: 60%; word-break: keep-all;">
+          Now comes the part where you enter that code to confirm that it really is you
         </p>
-        <div class="phone-input">
-          <vue-tel-input
-            v-model="phone"
-            enabled-country-code
-            valid-characters-only
-            placeholder="Enter your phone number"
-            :input-classes="phoneInputClass"
-            @country-changed="countryChanged"
-            @validate="checkValidPhone"
-          />
-          <v-icon v-show="validPhone" class="icon">fa-check</v-icon>
-        </div>
-        <div id="recaptcha-container"></div>
-        <v-btn
-          :disabled="!validCaptcha || !validPhone"
-          class="mt-12"
-          color="primary"
-          rounded
-          elevation="0"
-          large
-          @click="sendCode"
-        >
-          Send Me An SMS
-        </v-btn>
-      </v-row>
-      <v-dialog v-model="showModal" max-width="600px" persistent eager light>
-        <v-card outlined>
-          <v-card-title>We've just sent you a text</v-card-title>
-          <v-card-text>
-            <p style="width: 60%">
-              Now comes the part where you enter that code to confirm that it really is you
-            </p>
-            <div class="code-grid">
-              <template v-for="(digit, index) in code">
-                <label :key="`${index}-code-input`">
-                  <input
-                    :ref="`${index}-input`"
-                    v-model="code[index]"
-                    class="digit-input"
-                    maxlength="1"
-                    type="number"
-                    @keyup="changeFocus($event, index + 1)"
-                  />
-                </label>
-                <div
-                  v-if="index !== code.length - 1"
-                  :key="`${index}-divider`"
-                  class="code-divider"
-                >
-                  -
-                </div>
-              </template>
+        <div class="code-grid">
+          <template v-for="(digit, index) in code">
+            <label :key="`${index}-code-input`">
+              <input
+                :ref="`${index}-input`"
+                v-model="code[index]"
+                class="digit-input"
+                maxlength="1"
+                type="number"
+                @keyup="changeFocus($event, index + 1)"
+              />
+            </label>
+            <div v-if="index !== code.length - 1" :key="`${index}-divider`" class="code-divider">
+              -
             </div>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn ref="confirmButton" color="primary" text @click="confirmCode">
-                Confirm Code
-              </v-btn>
-            </v-card-actions>
-          </v-card-text>
-        </v-card>
-      </v-dialog>
-    </v-container>
-    <v-overlay v-show="!loaded" opacity="0">
-      <v-progress-circular indeterminate size="70"></v-progress-circular>
-    </v-overlay>
-  </v-main>
+          </template>
+        </div>
+      </span>
+      <span slot="footer">
+        <el-button
+          ref="confirmButton"
+          :disabled="code[5] == null"
+          type="success"
+          plain
+          @click="confirmCode"
+        >
+          Confirm Code
+        </el-button>
+      </span>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
 import { VueTelInput } from 'vue-tel-input';
-import { mapActions } from 'vuex';
-import * as firebase from 'firebase/app';
-import 'firebase/auth';
+import { mapActions, mapState } from 'vuex';
+import { Loading } from 'element-ui';
+import { auth } from '../firebase';
 
 export default {
   name: 'Login',
@@ -89,44 +88,28 @@ export default {
   data() {
     return {
       phone: '',
-      dialCode: '',
-      validCaptcha: false,
       validPhone: false,
+      validReCaptcha: false,
       phoneInputClass: 'invalid',
-      loaded: false,
-      recaptchaVerifier: null,
-      confirmationResult: null,
-      showModal: false,
       code: [null, null, null, null, null, null],
     };
   },
-  created() {
-    // Add the Firebase services that you want to use
-    const firebaseConfig = {
-      apiKey: '',
-      authDomain: '',
-      databaseURL: '',
-      projectId: '',
-      storageBucket: '',
-      messagingSenderId: '',
-      appId: '',
-      measurementId: '',
-    };
-    firebase.initializeApp(firebaseConfig);
-  },
+  computed: mapState({
+    confirmationResult: state => state.confirmationResult,
+  }),
   mounted() {
-    firebase.auth().useDeviceLanguage();
-    this.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-      callback: () => {
-        this.validCaptcha = true;
-      },
-    });
-    this.recaptchaVerifier.render().then(function(widgetId) {
-      window.recaptchaWidgetId = widgetId;
-    });
-    setTimeout(() => {
-      this.loaded = true;
-    }, 1000);
+    const loader = Loading.service({ fullscreen: true, background: 'rgba(0, 0, 0, 0.5)' });
+    window.recaptchaVerifier = new auth.app.firebase_.auth.RecaptchaVerifier(
+      'recaptcha-container',
+      {
+        callback: () => {
+          // reCAPTCHA solved, allow signInWithPhoneNumber.
+          this.validReCaptcha = true;
+          this.$refs.sendButton.$el.focus();
+        },
+      }
+    );
+    window.recaptchaVerifier.render().then(() => loader.close());
   },
   methods: {
     checkValidPhone(phoneEvent) {
@@ -149,21 +132,10 @@ export default {
       return charCode >= 48 && charCode < 58;
     },
     async sendCode() {
-      firebase.auth().useDeviceLanguage();
-      firebase
-        .auth()
-        .signInWithPhoneNumber(`+${this.dialCode}${this.phone}`, this.recaptchaVerifier)
-        .then(confirmationResult => {
-          // SMS sent. Prompt user to type the code from the message, then sign the
-          // user in with confirmationResult.confirm(code).
-          this.confirmationResult = confirmationResult;
-          this.showModal = true;
-          // 50 ms delay to allow the modal to be rendered before we try to change the focus
-          setTimeout(() => this.changeFocus(new Event('first'), 0), 50);
-        })
-        .catch(error => {
-          console.error(error);
-        });
+      // reCAPTCHA solved, allow signInWithPhoneNumber.
+      this.loginUsingPhone({ phone: this.phone, recaptcha: window.recaptchaVerifier });
+      // Add 500ms delay to allow inputs to render before focusing
+      setTimeout(() => this.changeFocus(new Event('first'), 0), 500);
     },
     async confirmCode() {
       this.confirmationResult
@@ -171,16 +143,14 @@ export default {
         .then(result => {
           // User signed in successfully.
           this.setUser(result.user);
+          this.$router.push('/');
         })
         .catch(error => {
           // User couldn't sign in (bad verification code?)
           console.error(error);
         });
     },
-    countryChanged(event) {
-      this.dialCode = event.dialCode;
-    },
-    ...mapActions(['setUser']),
+    ...mapActions(['setUser', 'loginUsingPhone']),
   },
 };
 </script>
@@ -192,17 +162,21 @@ export default {
 
   > h1 {
     font-size: 84px;
+    color: white;
+    margin-bottom: 0;
   }
 
   > p {
     padding-bottom: 25px;
     width: 340px;
     margin: auto;
+    color: white;
     font-size: 18px;
+    margin-bottom: 2rem;
   }
 
   #recaptcha-container {
-    margin: 1rem auto;
+    margin: 1rem auto 3rem;
     width: fit-content;
     height: 74px;
   }
@@ -210,13 +184,14 @@ export default {
 
 .phone-input {
   max-width: 500px;
-  margin: auto auto 50px;
+  margin: auto;
   display: grid;
   grid-template-columns: 1fr 0;
 
-  > .icon {
-    margin-left: 20px;
-    color: hsl(136deg 65% 58%);
+  > i {
+    margin-left: 5px;
+    font-size: 28px;
+    color: #48e06e;
   }
 
   > .vue-tel-input {
@@ -251,5 +226,14 @@ export default {
   > .code-divider {
     font-size: 40px;
   }
+}
+</style>
+
+<style>
+.code-dialog {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 </style>
