@@ -2,7 +2,7 @@
   <div>
     <div class="header">
       <h1>Find your next album</h1>
-      <Searchbar placeholder="Find an album..." />
+      <Searchbar placeholder="Find an album..." @search="updateSearchString" />
     </div>
     <div>
       <template v-if="searching">
@@ -19,7 +19,7 @@
           </template>
         </div>
       </template>
-      <template v-else>
+      <template v-else-if="searchString.length > 0">
         <div class="result">
           <h1 class="result-text">Couldn't find any albums</h1>
         </div>
@@ -42,6 +42,11 @@ export default {
     AlbumSkeleton,
     Searchbar,
   },
+  data: function() {
+    return {
+      searchString: '',
+    };
+  },
   computed: mapState({
     albums: state => state.albums,
     searching: state => state.searching,
@@ -54,6 +59,9 @@ export default {
     window.removeEventListener('scroll', this.onScroll);
   },
   methods: {
+    updateSearchString(searchString) {
+      this.searchString = searchString;
+    },
     onScroll({
       target: {
         scrollingElement: { scrollTop, clientHeight, scrollHeight },

@@ -39,6 +39,7 @@ export default {
         this.setEmptyAlbums();
         this.callAPI();
       }
+      this.$emit('search', this.searchString);
     },
   },
   methods: {
