@@ -17,6 +17,7 @@ Vue.use(ElementUI, { locale });
 let app;
 auth.onAuthStateChanged(() => {
   if (!app) {
+    store.dispatch('refreshAlbumsInList');
     app = new Vue({
       router,
       store,

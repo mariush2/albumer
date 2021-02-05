@@ -19,18 +19,24 @@
           </h5>
         </div>
         <el-button
-          v-if="!isAdded && !isAdding"
-          class="add-button"
-          icon="el-icon-plus"
-          @click="addAlbum"
+          v-if="!isRemoving"
+          class="remove-button"
+          type="danger"
+          plain
+          icon="el-icon-delete"
+          @click="removeAlbum"
         >
-          Add
+          Remove
         </el-button>
-        <el-button v-else-if="isAdding" class="add-button" disabled icon="el-icon-loading">
-          Adding
-        </el-button>
-        <el-button v-else class="add-button" type="success" plain disabled icon="el-icon-check">
-          Added
+        <el-button
+          v-else
+          class="remove-button"
+          type="danger"
+          plain
+          icon="el-icon-loading"
+          @click="removeAlbum"
+        >
+          Removing
         </el-button>
       </div>
     </div>
@@ -40,7 +46,7 @@
 <script>
 import { mapActions } from 'vuex';
 // Adding delay for improved UX in case of slow DB
-const addingDelay = 500;
+const removingDelay = 500;
 export default {
   name: 'Album',
   props: {
@@ -48,34 +54,23 @@ export default {
       type: Object,
       required: true,
     },
-    albumsInList: {
-      type: Array,
-      required: true,
-    },
   },
   data: function() {
     return {
-      isAdded: false,
-      isAdding: false,
+      isRemoving: false,
     };
   },
-  mounted() {
-    if (this.albumsInList.includes(this.album.id)) this.isAdded = true;
-  },
   methods: {
-    async addAlbum() {
-      this.isAdding = true;
+    removeAlbum() {
+      this.isRemoving = true;
       setTimeout(async () => {
-        if (!this.isAdded) {
-          this.isAdded = true;
-          await this.addToAlbumsInList(this.album.id);
-          await this.setAlbumListDB();
-          // Add album
-          this.isAdding = false;
-        }
-      }, addingDelay);
+        await this.removeFromAlbumsInList(this.album.id);
+        await this.setAlbumListDB();
+        this.isRemoving = false;
+        this.$emit('deleted', this.album.id);
+      }, removingDelay);
     },
-    ...mapActions(['setAlbumListDB', 'addToAlbumsInList']),
+    ...mapActions(['removeFromAlbumsInList', 'setAlbumListDB']),
   },
 };
 </script>
@@ -94,7 +89,7 @@ export default {
   position: relative;
 }
 
-.add-button {
+.remove-button {
   width: 100%;
   position: absolute;
   bottom: 0;
