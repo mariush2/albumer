@@ -15,7 +15,12 @@
       <template v-else-if="albumsInSearch[0] != 'none'">
         <div class="album-grid">
           <template v-for="(album, index) in albumsInSearch">
-            <Album :key="`album-${index}`" :album="album" :albums-in-list="albumsInList" />
+            <Album
+              :key="`album-${index}`"
+              :album="album"
+              :albums-in-list="albumsInList"
+              :albums-in-listened="albumsInListened"
+            />
           </template>
         </div>
       </template>
@@ -50,6 +55,7 @@ export default {
   computed: mapState({
     albumsInSearch: state => state.albumsInSearch,
     albumsInList: state => state.albumsInList,
+    albumsInListened: state => state.albumsInListened,
     searching: state => state.searching,
   }),
   created() {

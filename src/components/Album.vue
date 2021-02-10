@@ -19,7 +19,17 @@
           </h5>
         </div>
         <el-button
-          v-if="!isAdded && !isAdding"
+          v-if="isListened"
+          class="add-button"
+          type="success"
+          plain
+          disabled
+          icon="el-icon-check"
+        >
+          Listened
+        </el-button>
+        <el-button
+          v-else-if="!isAdded && !isAdding"
           class="add-button"
           icon="el-icon-plus"
           @click="addAlbum"
@@ -52,15 +62,21 @@ export default {
       type: Array,
       required: true,
     },
+    albumsInListened: {
+      type: Array,
+      required: true,
+    },
   },
   data: function() {
     return {
       isAdded: false,
       isAdding: false,
+      isListened: false,
     };
   },
   mounted() {
-    if (this.albumsInList.includes(this.album.id)) this.isAdded = true;
+    this.isAdded = this.albumsInList.includes(this.album.id);
+    this.isListened = this.albumsInListened.includes(this.album.id);
   },
   methods: {
     async addAlbum() {
