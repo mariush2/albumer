@@ -5,14 +5,14 @@ import 'firebase/firestore';
 
 // firebase init - add your own config here
 const firebaseConfig = {
-  apiKey: '',
-  authDomain: '',
-  databaseURL: '',
-  projectId: '',
-  storageBucket: '',
-  messagingSenderId: '',
-  appId: '',
-  measurementId: '',
+  apiKey: 'AIzaSyBaybEzjRcudgE9_q9HsMOBrCzNmRPLi7o',
+  authDomain: 'albumer-cdb7c.firebaseapp.com',
+  databaseURL: 'https://albumer-cdb7c.firebaseio.com',
+  projectId: 'albumer-cdb7c',
+  storageBucket: 'albumer-cdb7c.appspot.com',
+  messagingSenderId: '174570421104',
+  appId: '1:174570421104:web:16e160c2e9bcc60c46adb5',
+  measurementId: 'G-J73X7VG5NB',
 };
 firebase.initializeApp(firebaseConfig);
 

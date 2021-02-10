@@ -93,7 +93,9 @@ export default new Vuex.Store({
         });
     },
     async refreshAccessToken({ commit, state }) {
-      const response = await fetch('http://localhost:3005/spotify/token');
+      const response = await fetch(
+        'https://europe-west2-albumer-cdb7c.cloudfunctions.net/spotify-token-1'
+      );
       const body = await response.json();
       try {
         commit('changeAccessToken', { token: body.access_token });
