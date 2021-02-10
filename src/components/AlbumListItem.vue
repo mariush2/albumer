@@ -18,26 +18,28 @@
             {{ album.total_tracks }} tracks
           </h5>
         </div>
-        <el-button
-          v-if="!isRemoving"
-          class="remove-button"
-          type="danger"
-          plain
-          icon="el-icon-delete"
-          @click="removeAlbum"
-        >
-          Remove
-        </el-button>
-        <el-button
-          v-else
-          class="remove-button"
-          type="danger"
-          plain
-          icon="el-icon-loading"
-          @click="removeAlbum"
-        >
-          Removing
-        </el-button>
+        <div class="album-actions">
+          <el-button
+            v-if="!isListened"
+            type="success"
+            plain
+            icon="el-icon-check"
+            @click="markListened"
+          >
+            Listened
+          </el-button>
+          <el-button v-else type="success" plain icon="el-icon-loading">
+            Marking as listened
+          </el-button>
+          <el-button
+            v-if="!isRemoving"
+            type="danger"
+            plain
+            icon="el-icon-delete"
+            @click="removeAlbum"
+          />
+          <el-button v-else class="remove-button" type="danger" plain icon="el-icon-loading" />
+        </div>
       </div>
     </div>
   </el-card>
@@ -46,7 +48,7 @@
 <script>
 import { mapActions } from 'vuex';
 // Adding delay for improved UX in case of slow DB
-const removingDelay = 500;
+const actionDelay = 500;
 export default {
   name: 'Album',
   props: {
@@ -58,6 +60,7 @@ export default {
   data: function() {
     return {
       isRemoving: false,
+      isListened: false,
     };
   },
   methods: {
@@ -68,9 +71,25 @@ export default {
         await this.setAlbumListDB();
         this.isRemoving = false;
         this.$emit('deleted', this.album.id);
-      }, removingDelay);
+      }, actionDelay);
     },
-    ...mapActions(['removeFromAlbumsInList', 'setAlbumListDB']),
+    markListened() {
+      this.isListened = true;
+      setTimeout(async () => {
+        await this.addToAlbumsInListened(this.album.id);
+        await this.removeFromAlbumsInList(this.album.id);
+        await this.setAlbumListenedDB();
+        await this.setAlbumListDB();
+        this.isListened = false;
+        this.$emit('deleted', this.album.id);
+      }, actionDelay);
+    },
+    ...mapActions([
+      'addToAlbumsInListened',
+      'setAlbumListenedDB',
+      'removeFromAlbumsInList',
+      'setAlbumListDB',
+    ]),
   },
 };
 </script>
@@ -87,12 +106,6 @@ export default {
   width: 100%;
   padding: 0;
   position: relative;
-}
-
-.remove-button {
-  width: 100%;
-  position: absolute;
-  bottom: 0;
 }
 
 h2,
@@ -121,5 +134,12 @@ h5 {
 }
 .album-info {
   width: 100%;
+}
+.album-actions {
+  display: grid;
+  grid-template-columns: 4fr 1fr;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
 }
 </style>

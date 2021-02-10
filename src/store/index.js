@@ -8,7 +8,8 @@ export default new Vuex.Store({
   state: {
     accessToken: '',
     albumsInSearch: [],
-    albumsInList: [],
+    albumsInList: null,
+    albumsInListened: [],
     nextUrl: '',
     searching: false,
     limit: 20,
@@ -43,13 +44,23 @@ export default new Vuex.Store({
     setAlbumsInList(state, payload) {
       state.albumsInList = payload.albums;
     },
+    setAlbumsInListened(state, payload) {
+      state.albumsInListened = payload.albums;
+    },
   },
   actions: {
     async setAlbumListDB({ state }) {
       // Write to database
       const userId = auth.currentUser.uid;
-      await db.ref('users/' + userId).set({
+      await db.ref('list/' + userId).set({
         albums: state.albumsInList,
+      });
+    },
+    async setAlbumListenedDB({ state }) {
+      // Write to database
+      const userId = auth.currentUser.uid;
+      await db.ref('listened/' + userId).set({
+        albums: state.albumsInListened,
       });
     },
     removeFromAlbumsInList({ commit, state }, album) {
@@ -58,17 +69,27 @@ export default new Vuex.Store({
     addToAlbumsInList({ commit, state }, album) {
       commit('setAlbumsInList', { albums: [...state.albumsInList, album] });
     },
+    addToAlbumsInListened({ commit, state }, album) {
+      commit('setAlbumsInListened', { albums: [...state.albumsInListened, album] });
+    },
+    async refreshAlbumsInListened({ commit }) {
+      const userId = auth.currentUser.uid;
+      await db
+        .ref(`/listened/${userId}`)
+        .once('value')
+        .then(snapshot => {
+          const currentListened = snapshot.val() != null ? snapshot.val().albums : [];
+          commit('setAlbumsInListened', { albums: currentListened });
+        });
+    },
     async refreshAlbumsInList({ commit }) {
       const userId = auth.currentUser.uid;
       await db
-        .ref(`/users/${userId}`)
+        .ref(`/list/${userId}`)
         .once('value')
         .then(snapshot => {
-          const currentAlbums = snapshot.val().albums;
-          if (currentAlbums.length > 0) {
-            currentAlbums;
-            commit('setAlbumsInList', { albums: currentAlbums });
-          } else this.currentAlbums = [];
+          const currentAlbums = snapshot.val() != null ? snapshot.val().albums : [];
+          commit('setAlbumsInList', { albums: currentAlbums });
         });
     },
     async refreshAccessToken({ commit, state }) {
@@ -121,6 +142,8 @@ export default new Vuex.Store({
           name: album.name,
         };
       });
+
+      newAlbums = newAlbums.filter(album => !state.albumsInListened.includes(album.id));
 
       for (let album of newAlbums) {
         let exists = false;

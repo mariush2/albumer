@@ -1,8 +1,14 @@
 <template>
   <div class="content">
     <div class="header">
-      <h1 ref="title">Your current list of albums</h1>
-      <el-select ref="sorting" v-model="sorting" placeholder="Sorting" @change="changeSorting">
+      <h1 ref="title">Your current list of albums, sorted by</h1>
+      <el-select
+        ref="sorting"
+        v-model="sorting"
+        class="select"
+        placeholder="Sorting"
+        @change="changeSorting"
+      >
         <el-option
           v-for="item in options"
           :key="item.value"
@@ -63,7 +69,7 @@ export default {
     const loader = Loading.service({ fullscreen: true, background: 'rgba(0, 0, 0, 0.5)' });
     const interval = setInterval(() => {
       this.getAlbumsInList();
-      if (this.albumsInList.length > 0) {
+      if (this.albumsInList && this.albumsInList.length >= 0) {
         clearInterval(interval);
         loader.close();
       }
@@ -142,7 +148,7 @@ export default {
   display: grid;
   align-items: center;
   justify-content: center;
-  grid-gap: 25px;
+  grid-gap: 15px;
 
   > * {
     grid-row: 1;
@@ -160,5 +166,9 @@ export default {
   justify-items: center;
   width: fit-content;
   margin: auto;
+}
+
+.select {
+  background: none;
 }
 </style>
