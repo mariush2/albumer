@@ -120,8 +120,7 @@ h5 {
   position: relative;
 }
 .album-image {
-  width: 145px;
-  height: 145px;
+  width: 140px;
   box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.2);
 }
 .album-title {
