@@ -10,15 +10,11 @@ import { auth } from './firebase';
 
 Vue.config.productionTip = false;
 
-store.dispatch('refreshAccessToken');
-
 Vue.use(ElementUI, { locale });
 
 let app;
 auth.onAuthStateChanged(() => {
   if (!app) {
-    store.dispatch('refreshAlbumsInList');
-    store.dispatch('refreshAlbumsInListened');
     app = new Vue({
       router,
       store,

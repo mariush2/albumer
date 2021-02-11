@@ -58,6 +58,11 @@ export default {
     albumsInListened: state => state.albumsInListened,
     searching: state => state.searching,
   }),
+  mounted() {
+    this.refreshAlbumsInList();
+    this.refreshAlbumsInListened();
+    this.refreshAccessToken();
+  },
   created() {
     // Attach event listener to html-tag
     window.addEventListener('scroll', this.onScroll);
@@ -78,7 +83,12 @@ export default {
         this.nextAlbums();
       }
     },
-    ...mapActions(['nextAlbums']),
+    ...mapActions([
+      'nextAlbums',
+      'refreshAlbumsInList',
+      'refreshAlbumsInListened',
+      'refreshAccessToken',
+    ]),
   },
 };
 </script>

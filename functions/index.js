@@ -1,13 +1,15 @@
+/* eslint-disable max-len */
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 admin.initializeApp();
 const express = require('express');
+const request = require('request');
 const cookieParser = require('cookie-parser')();
-const cors = require('cors')({ origin: true });
+const cors = require('cors')({
+  origin: ['http://localhost:8080', 'https://albumer-cdb7c.web.app'],
+});
 const app = express();
 
-// Express middleware that validates Firebase ID Tokens passed in the Authorization HTTP header.
-// The Firebase ID token needs to be passed as a Bearer token in the Authorization HTTP header like this:
 // `Authorization: Bearer <Firebase ID Token>`.
 // when decoded successfully, the ID Token content will be added as `req.user`.
 const validateFirebaseIdToken = async (req, res, next) => {
@@ -18,8 +20,8 @@ const validateFirebaseIdToken = async (req, res, next) => {
     !(req.cookies && req.cookies.__session)
   ) {
     console.error(
-      'No Firebase ID token was passed as a Bearer token in the Authorization header.',
-      'Make sure you authorize your request by providing the following HTTP header:',
+      'No Firebase ID token was passed in the Authorization header.',
+      'Make sure you authorize your request:',
       'Authorization: Bearer <Firebase ID Token>',
       'or by passing a "__session" cookie.'
     );
@@ -59,14 +61,14 @@ app.use(cors);
 app.use(cookieParser);
 app.use(validateFirebaseIdToken);
 app.get('/spotifyToken', (req, res) => {
+  console.log(functions.config());
+  const auth = `${functions.config().spotify.client_id}:${
+    functions.config().spotify.client_secret
+  }`;
   const authOptions = {
     url: 'https://accounts.spotify.com/api/token',
     headers: {
-      Authorization:
-        'Basic ' +
-        Buffer.from(
-          `${functions.config().spotify.client_id}:${functions.config().spotify.client_secret}`
-        ).toString('base64'),
+      Authorization: 'Basic ' + Buffer.from(auth).toString('base64'),
     },
     form: {
       grant_type: 'client_credentials',
@@ -74,12 +76,14 @@ app.get('/spotifyToken', (req, res) => {
     json: true,
   };
 
-  req.post(authOptions, function(error, response, body) {
+  request.post(authOptions, function(error, response, body) {
     if (!error && response.statusCode === 200) {
-      const access_token = body.access_token;
+      const accessToken = body.access_token;
       res.send({
-        access_token: access_token,
+        access_token: accessToken,
       });
+    } else {
+      console.error(error, response);
     }
   });
 });

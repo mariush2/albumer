@@ -93,8 +93,18 @@ export default new Vuex.Store({
         });
     },
     async refreshAccessToken({ commit, state }) {
+      const userId = await auth.currentUser.getIdToken();
+      const headers = new Headers({
+        method: 'GET',
+        Authorization: `Bearer ${userId}`,
+        'Access-Control-Allow-Origin': 'http://localhost:5001',
+        'Access-Control-Allow-Credentials': 'true',
+      });
       const response = await fetch(
-        'https://europe-west2-albumer-cdb7c.cloudfunctions.net/spotify-token-1'
+        'http://localhost:5001/albumer-cdb7c/us-central1/app/spotifyToken',
+        {
+          headers,
+        }
       );
       const body = await response.json();
       try {
