@@ -161,7 +161,7 @@ export default {
 
 .album-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   grid-gap: 15px;
   justify-items: center;
   width: fit-content;
@@ -170,5 +170,11 @@ export default {
 
 .select {
   background: none;
+}
+
+@media (min-width: 1000px) {
+  .album-grid {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 </style>

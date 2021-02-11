@@ -118,10 +118,6 @@ export default {
   color: white;
   margin: auto;
   margin-bottom: 2rem;
-
-  > h1 {
-    margin-top: 0;
-  }
 }
 
 @media (min-width: 1000px) {
