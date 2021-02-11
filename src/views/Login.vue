@@ -33,12 +33,11 @@
       title="We've just sent you a text"
       custom-class="code-dialog"
       :show-close="false"
-      width="500px"
       top="0"
       append-to-body
     >
       <span>
-        <p style="width: 60%; word-break: keep-all;">
+        <p style="word-break: keep-all;">
           Now comes the part where you enter that code to confirm that it really is you
         </p>
         <div class="code-grid">
@@ -182,6 +181,24 @@ export default {
   }
 }
 
+@media (max-width: 1000px) {
+  .content-container > h1 {
+    font-size: 52px;
+  }
+  .code-dialog > div > span > .code-grid {
+    grid-template-columns: repeat(6, 1fr);
+    grid-gap: 12px;
+    width: fit-content;
+  }
+  .code-grid > .code-divider {
+    display: none;
+  }
+  .code-grid > label > .digit-input {
+    font-size: 20px;
+    width: 20px;
+  }
+}
+
 .phone-input {
   max-width: 500px;
   margin: auto;
@@ -205,7 +222,7 @@ export default {
 .digit-input {
   background: white;
   border: 1px solid grey;
-  width: 50px;
+  width: 100%;
   height: 50px;
   text-align: center;
   font-size: 30px;
@@ -222,10 +239,9 @@ export default {
   align-items: center;
   justify-items: center;
   margin: 3rem auto 5rem auto;
-
-  > .code-divider {
-    font-size: 40px;
-  }
+}
+.code-divider {
+  font-size: 40px;
 }
 </style>
 
@@ -235,5 +251,7 @@ export default {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  width: fit-content;
+  max-width: 500px;
 }
 </style>
