@@ -98,6 +98,7 @@ export default {
   display: grid;
   grid-template-columns: 1fr;
   grid-gap: 12px;
+  padding-top: 1rem;
   justify-items: center;
   width: fit-content;
   margin: auto;

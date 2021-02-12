@@ -5,18 +5,20 @@
         <el-image fit="fill" :src="album.images[0].url" />
       </div>
       <div class="album-content">
-        <div class="album-title">
-          <h2>{{ album.name }}</h2>
-        </div>
-        <div class="album-artist">
-          <h3>by {{ album.artists[0].name }}</h3>
-        </div>
-        <div class="album-info">
-          <h5>
-            {{ album.release_date.substring(0, 4) }}
-            <br />
-            {{ album.total_tracks }} tracks
-          </h5>
+        <div>
+          <div class="album-title">
+            <p>{{ album.name }}</p>
+          </div>
+          <div class="album-artist">
+            <p>by {{ album.artists[0].name }}</p>
+          </div>
+          <div class="album-info">
+            <p>
+              {{ album.release_date.substring(0, 4) }}
+              <br />
+              {{ album.total_tracks }} tracks
+            </p>
+          </div>
         </div>
         <div class="album-actions">
           <el-button
@@ -103,49 +105,60 @@ export default {
 .card-body {
   display: grid;
   grid-template-columns: 1fr 3fr;
+  align-items: center;
   position: relative;
+  grid-gap: 15px;
+  height: 12rem;
 }
 
 .card {
-  max-width: 500px;
-  width: 100%;
+  width: min-content;
   padding: 0;
   position: relative;
 }
 
-h2,
-h3,
-h5 {
+p {
   margin: 0;
   font-size: 100%;
+  margin-bottom: 2px;
 }
 .album-content {
-  margin-left: 1rem;
+  display: grid;
+  grid-gap: 15px;
   height: 100%;
-  position: relative;
 }
 .album-image {
   width: 165px;
   height: 165px;
   box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.2);
 }
-.album-title {
-  width: 100%;
-  margin-bottom: 5px;
-}
-.album-artist {
-  width: 100%;
-  margin-bottom: 5px;
-}
+.album-title,
+.album-artist,
 .album-info {
-  width: 100%;
+  height: min-content;
 }
+
+.album-title > p {
+  font-weight: 500;
+}
+.album-artist > p {
+  font-weight: 400;
+}
+.album-info > p {
+  font-weight: 300;
+}
+
 .album-actions {
-  display: grid;
   grid-template-columns: 4fr 1fr;
-  width: 100%;
-  position: absolute;
-  bottom: 0;
+  display: grid;
+  align-self: flex-end;
+}
+
+@media (max-width: 400px) {
+  .album-image {
+    width: 150px;
+    height: 150px;
+  }
 }
 
 @media (max-width: 400px) {

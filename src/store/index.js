@@ -145,9 +145,9 @@ export default new Vuex.Store({
         },
       });
       const body = await response.json();
-      const newAlbums = body.albums.items;
+      let newAlbums = body.albums.items;
       let adding = [];
-      const currentLength = state.albums.length;
+      const currentLength = state.albumsInSearch.length;
       const currentAlbums = state.albumsInSearch.map(album => {
         return {
           id: album.id,

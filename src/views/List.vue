@@ -169,9 +169,10 @@ export default {
 .album-grid {
   display: grid;
   grid-template-columns: 1fr;
+  padding-top: 1rem;
   grid-gap: 15px;
   justify-items: center;
-  width: fit-content;
+  width: min-content;
   margin: auto;
 }
 
