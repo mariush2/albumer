@@ -139,17 +139,17 @@ export default {
     async confirmCode() {
       this.confirmationResult
         .confirm(this.code.reduce((acc, val) => acc + val))
-        .then(result => {
+        .then(() => {
           // User signed in successfully.
-          this.setUser(result.user);
           this.$router.push('/');
+          this.resetConfirmationResult();
         })
         .catch(error => {
           // User couldn't sign in (bad verification code?)
           console.error(error);
         });
     },
-    ...mapActions(['setUser', 'loginUsingPhone']),
+    ...mapActions(['setUser', 'loginUsingPhone', 'resetConfirmationResult']),
   },
 };
 </script>

@@ -43,3 +43,15 @@ textarea {
 .el-input__inner {
   font-size: 16px;
 }
+
+.el-drawer {
+  background-color: #b65b6b;
+}
+.el-drawer__header,
+.el-menu-item i {
+  color: white;
+}
+
+.el-menu {
+  border-right: none;
+}

@@ -118,7 +118,7 @@ export default {
   text-align: center;
   color: white;
   margin: auto;
-  margin-bottom: 2rem;
+  margin-top: 2rem;
 }
 
 @media (min-width: 1000px) {

@@ -66,7 +66,10 @@ export default {
     accessToken: state => state.accessToken,
   }),
   async mounted() {
-    const loader = Loading.service({ fullscreen: true, background: 'rgba(0, 0, 0, 0.5)' });
+    const loader = Loading.service({
+      fullscreen: true,
+      background: 'rgba(0, 0, 0, 0.5)',
+    });
     await this.refreshAlbumsInList();
     await this.refreshAlbumsInListened();
     await this.refreshAccessToken();
@@ -154,6 +157,7 @@ export default {
   display: grid;
   align-items: center;
   justify-content: center;
+  margin-top: 2rem;
   grid-gap: 15px;
 
   > * {

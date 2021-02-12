@@ -187,5 +187,8 @@ export default new Vuex.Store({
     setEmptyAlbums({ commit }) {
       commit('emptyAlbums');
     },
+    resetConfirmationResult({ commit }) {
+      commit('setConfirmationResult', { confirmationResult: null });
+    },
   },
 });
