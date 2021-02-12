@@ -97,11 +97,11 @@ export default new Vuex.Store({
       const headers = new Headers({
         method: 'GET',
         Authorization: `Bearer ${userId}`,
-        'Access-Control-Allow-Origin': 'http://localhost:5001',
+        'Access-Control-Allow-Origin': 'https://us-central1-albumer-cdb7c.cloudfunctions.net',
         'Access-Control-Allow-Credentials': 'true',
       });
       const response = await fetch(
-        'http://localhost:5001/albumer-cdb7c/us-central1/app/spotifyToken',
+        'https://us-central1-albumer-cdb7c.cloudfunctions.net/app/spotifyToken',
         {
           headers,
         }
