@@ -101,7 +101,7 @@ body {
 
 #bar {
   position: absolute;
-  top: -1rem;
+  top: 1rem;
   left: 1rem;
 }
 #logout {

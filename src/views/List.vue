@@ -153,11 +153,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.content {
+  padding-top: 4rem;
+}
 .header {
   display: grid;
   align-items: center;
   justify-content: center;
-  margin-top: 2rem;
   grid-gap: 15px;
 
   > * {
