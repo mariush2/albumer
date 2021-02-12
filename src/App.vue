@@ -4,7 +4,13 @@
       <div id="bar">
         <el-button icon="el-icon-menu" size="medium" type="default" @click="drawer = true" />
       </div>
-      <el-drawer title="Pages" :visible.sync="drawer" custom-class="nav-drawer" direction="ltr">
+      <el-drawer
+        title="Pages"
+        :visible.sync="drawer"
+        size="min-content"
+        custom-class="nav-drawer"
+        direction="ltr"
+      >
         <el-menu
           background-color="#b65b6b"
           text-color="#fff"
