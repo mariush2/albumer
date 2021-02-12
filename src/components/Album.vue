@@ -119,7 +119,6 @@ export default {
   align-items: center;
   position: relative;
   grid-gap: 15px;
-  height: 12rem;
   max-width: 380px;
 }
 

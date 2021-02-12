@@ -177,8 +177,8 @@ export default {
   grid-template-columns: 1fr;
   padding-top: 1rem;
   grid-gap: 15px;
+  width: fit-content;
   justify-items: center;
-  width: min-content;
   margin: auto;
 }
 

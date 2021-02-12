@@ -31,16 +31,22 @@
             {{ mobileButtons ? '' : 'Listened' }}
           </el-button>
           <el-button v-else type="success" plain icon="el-icon-loading">
-            Marking as listened
+            Listened
           </el-button>
           <el-button
-            v-if="!isRemoving"
+            v-if="!isRemoving && !isListened"
             type="danger"
             plain
             icon="el-icon-delete"
             @click="removeAlbum"
           />
-          <el-button v-else class="remove-button" type="danger" plain icon="el-icon-loading" />
+          <el-button
+            v-else-if="!isListened"
+            class="remove-button"
+            type="danger"
+            plain
+            icon="el-icon-loading"
+          />
         </div>
       </div>
     </div>
@@ -108,13 +114,13 @@ export default {
   align-items: center;
   position: relative;
   grid-gap: 15px;
-  height: 12rem;
+  max-width: 380px;
 }
 
 .card {
-  width: min-content;
   padding: 0;
   position: relative;
+  width: 100%;
 }
 
 p {
@@ -154,20 +160,27 @@ p {
   align-self: flex-end;
 }
 
-@media (max-width: 400px) {
+@media (max-width: 450px) {
   .album-image {
     width: 150px;
     height: 150px;
   }
 }
 
-@media (max-width: 400px) {
+@media (max-width: 440px) {
   .album-image {
-    width: 150px;
-    height: 150px;
+    width: 145px;
+    height: 145px;
   }
   .album-actions {
     grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 405px) {
+  .album-image {
+    width: 125px;
+    height: 125px;
   }
 }
 </style>

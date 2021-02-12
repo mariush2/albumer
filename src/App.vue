@@ -2,15 +2,9 @@
   <div id="app">
     <template v-if="$router.history.current.path != '/login'">
       <div id="bar">
-        <el-button icon="el-icon-menu" size="medium" type="default" @click="drawer = true" />
+        <el-button circle icon="el-icon-menu" size="medium" type="default" @click="drawer = true" />
       </div>
-      <el-drawer
-        title="Pages"
-        :visible.sync="drawer"
-        size="min-content"
-        custom-class="nav-drawer"
-        direction="ltr"
-      >
+      <el-drawer title="Pages" :visible.sync="drawer" size="min-content" direction="ltr">
         <el-menu
           background-color="#b65b6b"
           text-color="#fff"
