@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 import { Loading } from 'element-ui';
 import AlbumListItem from '../components/AlbumListItem.vue';
 export default {
@@ -67,8 +67,13 @@ export default {
   }),
   async mounted() {
     const loader = Loading.service({ fullscreen: true, background: 'rgba(0, 0, 0, 0.5)' });
+    await this.refreshAlbumsInList();
+    await this.refreshAlbumsInListened();
+    await this.refreshAccessToken();
     const interval = setInterval(() => {
-      this.getAlbumsInList();
+      if (this.albumsInList) {
+        this.getAlbumsInList();
+      }
       if (this.albumsInList && this.albumsInList.length >= 0) {
         clearInterval(interval);
         loader.close();
@@ -139,6 +144,7 @@ export default {
           break;
       }
     },
+    ...mapActions(['refreshAlbumsInList', 'refreshAlbumsInListened', 'refreshAccessToken']),
   },
 };
 </script>
@@ -156,6 +162,7 @@ export default {
   > h1 {
     text-align: center;
     color: white;
+    font-size: 150%;
   }
 }
 

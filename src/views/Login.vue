@@ -133,8 +133,8 @@ export default {
     async sendCode() {
       // reCAPTCHA solved, allow signInWithPhoneNumber.
       this.loginUsingPhone({ phone: this.phone, recaptcha: window.recaptchaVerifier });
-      // Add 500ms delay to allow inputs to render before focusing
-      setTimeout(() => this.changeFocus(new Event('first'), 0), 500);
+      // Add 1000ms delay to allow inputs to render before focusing
+      setTimeout(() => this.changeFocus(new Event('first'), 0), 1000);
     },
     async confirmCode() {
       this.confirmationResult

@@ -39,7 +39,14 @@
         <el-button v-else-if="isAdding" class="add-button" disabled icon="el-icon-loading">
           Adding
         </el-button>
-        <el-button v-else class="add-button" type="success" plain disabled icon="el-icon-check">
+        <el-button
+          v-else
+          class="add-button"
+          type="success"
+          plain
+          icon="el-icon-check"
+          @click="undoAlbum"
+        >
           Added
         </el-button>
       </div>
@@ -91,7 +98,12 @@ export default {
         }
       }, addingDelay);
     },
-    ...mapActions(['setAlbumListDB', 'addToAlbumsInList']),
+    async undoAlbum() {
+      this.isAdded = false;
+      await this.removeFromAlbumsInList(this.album.id);
+      await this.setAlbumListDB();
+    },
+    ...mapActions(['setAlbumListDB', 'addToAlbumsInList', 'removeFromAlbumsInList']),
   },
 };
 </script>
@@ -142,5 +154,12 @@ h5 {
 }
 .album-info {
   width: 100%;
+}
+
+@media (max-width: 400px) {
+  .album-image {
+    width: 150px;
+    height: 150px;
+  }
 }
 </style>

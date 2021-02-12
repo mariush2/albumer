@@ -3,7 +3,6 @@
     <el-input
       v-model="searchString"
       :placeholder="placeholder"
-      size="large"
       clearable
       autofocus
       prefix-icon="el-icon-search"
@@ -51,7 +50,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .search-input-div {
   max-width: 500px;
   margin: auto;

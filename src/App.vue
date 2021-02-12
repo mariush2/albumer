@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div id="nav">
+    <div v-if="showNav" id="nav">
       <el-button
         circle
         icon="el-icon-house"
@@ -25,6 +25,11 @@
 <script>
 export default {
   name: 'App',
+  computed: {
+    showNav: function() {
+      return this.$router.history.current.path != '/login';
+    },
+  },
   methods: {
     handleClick(newRoute) {
       if (!this.isActive(newRoute)) this.$router.push(newRoute);

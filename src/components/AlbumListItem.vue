@@ -26,7 +26,7 @@
             icon="el-icon-check"
             @click="markListened"
           >
-            Listened
+            {{ mobileButtons ? '' : 'Listened' }}
           </el-button>
           <el-button v-else type="success" plain icon="el-icon-loading">
             Marking as listened
@@ -62,6 +62,11 @@ export default {
       isRemoving: false,
       isListened: false,
     };
+  },
+  computed: {
+    mobileButtons: function() {
+      return screen.width < 400;
+    },
   },
   methods: {
     removeAlbum() {
@@ -120,7 +125,8 @@ h5 {
   position: relative;
 }
 .album-image {
-  width: 140px;
+  width: 165px;
+  height: 165px;
   box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.2);
 }
 .album-title {
@@ -141,10 +147,14 @@ h5 {
   position: absolute;
   bottom: 0;
 }
-@media (min-width: 1000px) {
+
+@media (max-width: 400px) {
   .album-image {
-    width: 165px;
-    height: 165px;
+    width: 150px;
+    height: 150px;
+  }
+  .album-actions {
+    grid-template-columns: 1fr 1fr;
   }
 }
 </style>
