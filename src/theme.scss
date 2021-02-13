@@ -46,7 +46,6 @@ textarea {
 
 .el-drawer {
   background-color: #b65b6b;
-  padding-right: 1rem;
 }
 .el-drawer__header,
 .el-menu-item i {
@@ -55,4 +54,7 @@ textarea {
 
 .el-menu {
   border-right: none;
+}
+.el-menu-item {
+  padding-right: 2rem;
 }
