@@ -50,6 +50,15 @@
         </div>
       </div>
     </div>
+    <el-button
+      class="open-button"
+      plain
+      circle
+      type="info"
+      size="mini"
+      icon="el-icon-paperclip"
+      @click="openAlbum"
+    />
   </el-card>
 </template>
 
@@ -96,6 +105,9 @@ export default {
         this.isListened = false;
         this.$emit('deleted', this.album.id);
       }, actionDelay);
+    },
+    openAlbum() {
+      window.open(this.album.open_url);
     },
     ...mapActions([
       'addToAlbumsInListened',
@@ -146,6 +158,7 @@ p {
 
 .album-title > p {
   font-weight: 500;
+  padding-right: 28px;
 }
 .album-artist > p {
   font-weight: 400;
@@ -158,6 +171,12 @@ p {
   grid-template-columns: 4fr 1fr;
   display: grid;
   align-self: flex-end;
+}
+
+.open-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
 }
 
 @media (max-width: 450px) {

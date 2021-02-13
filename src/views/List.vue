@@ -110,6 +110,7 @@ export default {
             release_date: album.release_date,
             total_tracks: album.total_tracks,
             id: album.id,
+            open_url: album.external_urls.spotify,
           });
           albumsLeftToGet.pop();
         }
