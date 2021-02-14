@@ -64,7 +64,7 @@ export default new Vuex.Store({
       });
     },
     removeFromAlbumsInList({ commit, state }, album) {
-      commit('setAlbumsInList', { albums: state.albumsInList.filter(item => item != album) });
+      commit('setAlbumsInList', { albums: state.albumsInList.filter(item => item.id != album) });
     },
     addToAlbumsInList({ commit, state }, album) {
       commit('setAlbumsInList', { albums: [...state.albumsInList, album] });
@@ -79,7 +79,9 @@ export default new Vuex.Store({
         .once('value')
         .then(snapshot => {
           const currentListened = snapshot.val() != null ? snapshot.val().albums : [];
-          commit('setAlbumsInListened', { albums: currentListened });
+          commit('setAlbumsInListened', {
+            albums: currentListened,
+          });
         });
     },
     async refreshAlbumsInList({ commit }) {
@@ -88,8 +90,10 @@ export default new Vuex.Store({
         .ref(`/list/${userId}`)
         .once('value')
         .then(snapshot => {
-          const currentAlbums = snapshot.val() != null ? snapshot.val().albums : [];
-          commit('setAlbumsInList', { albums: currentAlbums });
+          const currentList = snapshot.val() != null ? snapshot.val().albums : [];
+          commit('setAlbumsInList', {
+            albums: currentList,
+          });
         });
     },
     async refreshAccessToken({ commit, state }) {

@@ -50,14 +50,22 @@ export default {
         },
         {
           value: 'year_asc',
-          label: 'Oldest',
+          label: 'Oldest - released',
         },
         {
           value: 'year_des',
-          label: 'Newest',
+          label: 'Newest - released',
+        },
+        {
+          value: 'added_asc',
+          label: 'Oldest - added',
+        },
+        {
+          value: 'added_des',
+          label: 'Newest - added',
         },
       ],
-      sorting: 'title',
+      sorting: 'added_des',
       loading: true,
     };
   },
@@ -74,49 +82,15 @@ export default {
     await this.refreshAlbumsInListened();
     await this.refreshAccessToken();
     const interval = setInterval(() => {
-      if (this.albumsInList) {
-        this.getAlbumsInList();
-      }
       if (this.albumsInList && this.albumsInList.length >= 0) {
         clearInterval(interval);
+        this.albums = this.albumsInList;
+        this.changeSorting();
         loader.close();
       }
     }, 800);
   },
   methods: {
-    async getAlbumsInList() {
-      // Get albums from spotify with ID's from vuex state
-      let albumsLeftToGet = [...this.albumsInList];
-      // Need to get 20 Albums at a time because of spotify's API limitations
-      // https://developer.spotify.com/documentation/web-api/reference/#category-albums
-      while (albumsLeftToGet.length > 0) {
-        let queryString = '';
-        for (let i = 0; i < 20 && i < albumsLeftToGet.length; i++) {
-          queryString += albumsLeftToGet[i] + ',';
-        }
-        queryString = queryString.slice(0, -1);
-        const response = await fetch(`https://api.spotify.com/v1/albums?ids=${queryString}`, {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${this.accessToken}`,
-          },
-        });
-        const body = await response.json();
-        for (let album of body.albums) {
-          this.albums.push({
-            name: album.name,
-            artists: album.artists,
-            images: album.images,
-            release_date: album.release_date,
-            total_tracks: album.total_tracks,
-            id: album.id,
-            open_url: album.external_urls.spotify,
-          });
-          albumsLeftToGet.pop();
-        }
-        this.changeSorting();
-      }
-    },
     updateAlbumsInList(removedAlbumId) {
       this.albums = this.albums.filter(album => album.id != removedAlbumId);
     },
@@ -144,6 +118,18 @@ export default {
           this.albums.sort((a, b) => {
             if (a.release_date.substring(0, 4) > b.release_date.substring(0, 4)) return -1;
             return a.release_date.substring(0, 4) < b.release_date.substring(0, 4) ? 1 : 0;
+          });
+          break;
+        case 'added_asc':
+          this.albums.sort((a, b) => {
+            if (new Date(a.added_date) < new Date(b.added_date)) return -1;
+            return new Date(a.added_date) > new Date(b.added_date) ? 1 : 0;
+          });
+          break;
+        case 'added_des':
+          this.albums.sort((a, b) => {
+            if (new Date(a.added_date) > new Date(b.added_date)) return -1;
+            return new Date(a.added_date) < new Date(b.added_date) ? 1 : 0;
           });
           break;
       }
