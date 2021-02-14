@@ -16,7 +16,7 @@
             <p>
               {{ album.release_date.substring(0, 4) }}
               <br />
-              {{ album.total_tracks }} tracks
+              {{ album.total_tracks }} {{ album.total_tracks == 1 ? 'track' : 'tracks' }}
             </p>
           </div>
         </div>
@@ -98,7 +98,16 @@ export default {
     markListened() {
       this.isListened = true;
       setTimeout(async () => {
-        await this.addToAlbumsInListened(this.album.id);
+        await this.addToAlbumsInListened({
+          artists: this.album.artists,
+          images: this.album.images,
+          name: this.album.name,
+          open_url: this.album.open_url,
+          release_date: this.album.release_date,
+          total_tracks: this.album.total_tracks,
+          id: this.album.id,
+          added_date: new Date().toJSON(),
+        });
         await this.removeFromAlbumsInList(this.album.id);
         await this.setAlbumListenedDB();
         await this.setAlbumListDB();

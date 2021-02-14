@@ -86,8 +86,8 @@ export default {
     };
   },
   mounted() {
-    this.isAdded = this.albumsInList.includes(this.album.id);
-    this.isListened = this.albumsInListened.includes(this.album.id);
+    this.isAdded = this.albumsInList.map(item => item.id).includes(this.album.id);
+    this.isListened = this.albumsInListened.map(item => item.id).includes(this.album.id);
   },
   methods: {
     async addAlbum() {
@@ -95,7 +95,16 @@ export default {
       setTimeout(async () => {
         if (!this.isAdded) {
           this.isAdded = true;
-          await this.addToAlbumsInList(this.album.id);
+          await this.addToAlbumsInList({
+            artists: this.album.artists,
+            images: this.album.images,
+            name: this.album.name,
+            open_url: this.album.external_urls.spotify,
+            release_date: this.album.release_date,
+            total_tracks: this.album.total_tracks,
+            added_date: new Date().toJSON(),
+            id: this.album.id,
+          });
           await this.setAlbumListDB();
           // Add album
           this.isAdding = false;
