@@ -42,19 +42,15 @@
         </p>
         <div class="code-grid">
           <template v-for="(digit, index) in code">
-            <label :key="`${index}-code-input`">
-              <input
-                :ref="`${index}-input`"
-                v-model="code[index]"
-                class="digit-input"
-                maxlength="1"
-                type="number"
-                @keyup="changeFocus($event, index + 1)"
-              />
-            </label>
-            <div v-if="index !== code.length - 1" :key="`${index}-divider`" class="code-divider">
-              -
-            </div>
+            <input
+              :ref="`${index}-input`"
+              :key="`${index}-input`"
+              v-model="code[index]"
+              class="digit-input"
+              maxlength="1"
+              type="number"
+              @input="event => updateValue(event.target.value, index)"
+            />
           </template>
         </div>
       </span>
@@ -116,14 +112,25 @@ export default {
       if (this.validPhone) this.phoneInputClass = 'valid';
       else this.phoneInputClass = 'invalid';
     },
-    changeFocus(event, bringInFocus) {
-      if (!this.isNumber(event) && event.type !== 'first') {
-        return;
-      }
-      if (bringInFocus !== this.code.length) {
-        this.$refs[`${bringInFocus}-input`][0].focus();
-      } else {
-        this.$refs['confirmButton'].$el.focus();
+    updateValue(value, index) {
+      if (value.length == 1) {
+        // Normal input
+        this.code[index] = value;
+        if (index < this.code.length - 1) {
+          this.$refs[`${index + 1}-input`][0].focus();
+        } else {
+          this.$nextTick(() => this.$refs['confirmButton'].$el.focus());
+        }
+      } else if (value.length > 1) {
+        // Pasted sms code
+        const digits = value.toString().split('');
+        for (const [index, digit] of digits.entries()) {
+          this.code[index] = Number(digit);
+        }
+        this.$nextTick(() => this.$refs['confirmButton'].$el.focus());
+      } else if (index != 0) {
+        // Deleted
+        this.$refs[`${index - 1}-input`][0].focus();
       }
     },
     isNumber: function(evt) {
@@ -134,7 +141,7 @@ export default {
       // reCAPTCHA solved, allow signInWithPhoneNumber.
       this.loginUsingPhone({ phone: this.phone, recaptcha: window.recaptchaVerifier });
       // Add 1000ms delay to allow inputs to render before focusing
-      setTimeout(() => this.changeFocus(new Event('first'), 0), 1000);
+      setTimeout(() => this.$refs['0-input'][0].focus(), 1000);
     },
     async confirmCode() {
       this.confirmationResult
@@ -143,10 +150,14 @@ export default {
           // User signed in successfully.
           this.$router.push('/');
           this.resetConfirmationResult();
+          this.$message({
+            message: 'Login success',
+            type: 'success',
+          });
         })
-        .catch(error => {
+        .catch(() => {
           // User couldn't sign in (bad verification code?)
-          console.error(error);
+          this.$message.error('Login failed, wrong verification code entered');
         });
     },
     ...mapActions(['setUser', 'loginUsingPhone', 'resetConfirmationResult']),
@@ -184,18 +195,6 @@ export default {
 @media (max-width: 1000px) {
   .content-container > h1 {
     font-size: 52px;
-  }
-  .code-dialog > div > span > .code-grid {
-    grid-template-columns: repeat(6, 1fr);
-    grid-gap: 12px;
-    width: fit-content;
-  }
-  .code-grid > .code-divider {
-    display: none;
-  }
-  .code-grid > label > .digit-input {
-    font-size: 20px;
-    width: 20px;
   }
 }
 
@@ -235,7 +234,7 @@ export default {
 }
 .code-grid {
   display: grid;
-  grid-template-columns: repeat(11, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   align-items: center;
   justify-items: center;
   margin: 3rem auto 5rem auto;

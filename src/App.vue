@@ -100,16 +100,23 @@ body {
 }
 
 #bar {
-  position: absolute;
+  position: fixed;
+  z-index: 1000;
+  background: #b65b6b;
   top: 1rem;
   left: 1rem;
+  border-radius: 3rem;
+  box-shadow: 0px 0px 4px 15px #b65b6b;
 }
 #logout {
+  width: 100%;
   list-style: none;
   padding-left: 20px;
   color: rgb(255, 255, 255);
   height: 56px;
   line-height: 56px;
+  transition: background-color 0.3s;
+  cursor: pointer;
   padding: 0 20px;
   font-size: 14px;
   position: absolute;
@@ -120,6 +127,9 @@ body {
     text-align: center;
     font-size: 18px;
     vertical-align: middle;
+  }
+  &:hover {
+    background: rgba(0, 0, 0, 0.2);
   }
 }
 </style>
