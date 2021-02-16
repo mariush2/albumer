@@ -6,11 +6,17 @@
       "**/.*",
       "**/node_modules/**"
     ],
-    "hosting": {
-      "headers": [
-        { "source":"dist/service-worker.js", "headers": [{"key": "Cache-Control", "value": "no-cache"}] }
-      ]
-    },
+    "headers": [
+      { 
+        "source":"dist/**",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=0"
+          }
+        ]
+      }
+    ],
     "rewrites": [
       {
         "source": "**",
