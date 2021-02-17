@@ -6,7 +6,7 @@ const express = require('express');
 const request = require('request');
 const cookieParser = require('cookie-parser')();
 const cors = require('cors')({
-  origin: ['http://localhost:8080', 'https://albumer-cdb7c.web.app'],
+  origin: ['http://localhost:8080', 'https://albumer-cdb7c.web.app', 'https://albumer.site'],
 });
 const app = express();
 
