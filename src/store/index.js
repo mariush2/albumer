@@ -66,6 +66,11 @@ export default new Vuex.Store({
     removeFromAlbumsInList({ commit, state }, album) {
       commit('setAlbumsInList', { albums: state.albumsInList.filter(item => item.id != album) });
     },
+    removeFromAlbumsInListened({ commit, state }, album) {
+      commit('setAlbumsInListened', {
+        albums: state.albumsInListened.filter(item => item.id != album),
+      });
+    },
     addToAlbumsInList({ commit, state }, album) {
       commit('setAlbumsInList', { albums: [...state.albumsInList, album] });
     },

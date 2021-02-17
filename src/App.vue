@@ -12,12 +12,16 @@
           :default-active="defaultActive"
         >
           <el-menu-item index="1" @click="handleClick('/')">
-            <i class="el-icon-house"></i>
-            <span>Home</span>
+            <i class="el-icon-search"></i>
+            <span>Find albums</span>
           </el-menu-item>
           <el-menu-item index="2" @click="handleClick('/list')">
             <i class="el-icon-document"></i>
             <span>Current list</span>
+          </el-menu-item>
+          <el-menu-item index="3" @click="handleClick('/listened')">
+            <i class="el-icon-document-checked"></i>
+            <span>Listened</span>
           </el-menu-item>
         </el-menu>
         <li id="logout" @click="logOut">
@@ -38,21 +42,23 @@ export default {
   data: function() {
     return {
       drawer: false,
+      defaultActive: '1',
     };
   },
-  computed: {
-    defaultActive: function() {
-      let active;
+  mounted: function() {
+    setTimeout(() => {
       switch (this.$router.history.current.path) {
         case '/':
-          active = '1';
+          this.defaultActive = '1';
           break;
         case '/list':
-          active = '2';
+          this.defaultActive = '2';
+          break;
+        case '/listened':
+          this.defaultActive = '3';
           break;
       }
-      return active;
-    },
+    }, 200);
   },
   methods: {
     handleClick(newRoute) {

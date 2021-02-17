@@ -21,43 +21,30 @@
           </div>
         </div>
         <div class="album-actions">
-          <el-button
-            v-if="!isListened"
-            type="success"
-            plain
-            icon="el-icon-check"
-            @click="markListened"
-          >
-            {{ mobileButtons ? '' : 'Listened' }}
+          <el-button type="info" plain icon="el-icon-paperclip" @click="openAlbum">
+            Open
           </el-button>
-          <el-button v-else type="success" plain icon="el-icon-loading">
-            Listened
-          </el-button>
-          <el-button
-            v-if="!isRemoving && !isListened"
-            type="danger"
-            plain
-            icon="el-icon-delete"
-            @click="removeAlbum"
-          />
-          <el-button
-            v-else-if="!isListened"
-            class="remove-button"
-            type="danger"
-            plain
-            icon="el-icon-loading"
-          />
         </div>
       </div>
     </div>
     <el-button
-      class="open-button"
+      v-if="!isRemoving"
+      class="remove-button"
       plain
       circle
-      type="info"
+      type="danger"
       size="mini"
-      icon="el-icon-paperclip"
-      @click="openAlbum"
+      icon="el-icon-delete"
+      @click="removeAlbum"
+    />
+    <el-button
+      v-else
+      class="remove-button"
+      plain
+      circle
+      type="danger"
+      size="mini"
+      icon="el-icon-loading"
     />
   </el-card>
 </template>
@@ -67,7 +54,7 @@ import { mapActions } from 'vuex';
 // Adding delay for improved UX in case of slow DB
 const actionDelay = 500;
 export default {
-  name: 'Album',
+  name: 'AlbumListened',
   props: {
     album: {
       type: Object,
@@ -77,7 +64,6 @@ export default {
   data: function() {
     return {
       isRemoving: false,
-      isListened: false,
     };
   },
   computed: {
@@ -89,41 +75,16 @@ export default {
     removeAlbum() {
       this.isRemoving = true;
       setTimeout(async () => {
-        await this.removeFromAlbumsInList(this.album.id);
-        await this.setAlbumListDB();
-        this.isRemoving = false;
-        this.$emit('deleted', this.album.id);
-      }, actionDelay);
-    },
-    markListened() {
-      this.isListened = true;
-      setTimeout(async () => {
-        await this.addToAlbumsInListened({
-          artists: this.album.artists,
-          images: this.album.images,
-          name: this.album.name,
-          open_url: this.album.open_url,
-          release_date: this.album.release_date,
-          total_tracks: this.album.total_tracks,
-          id: this.album.id,
-          added_date: new Date().toJSON(),
-        });
-        await this.removeFromAlbumsInList(this.album.id);
+        await this.removeFromAlbumsInListened(this.album.id);
         await this.setAlbumListenedDB();
-        await this.setAlbumListDB();
-        this.isListened = false;
+        this.isRemoving = false;
         this.$emit('deleted', this.album.id);
       }, actionDelay);
     },
     openAlbum() {
       window.open(this.album.open_url);
     },
-    ...mapActions([
-      'addToAlbumsInListened',
-      'setAlbumListenedDB',
-      'removeFromAlbumsInList',
-      'setAlbumListDB',
-    ]),
+    ...mapActions(['setAlbumListenedDB', 'removeFromAlbumsInListened']),
   },
 };
 </script>
@@ -177,12 +138,12 @@ p {
 }
 
 .album-actions {
-  grid-template-columns: 4fr 1fr;
+  grid-template-columns: 1fr;
   display: grid;
   align-self: flex-end;
 }
 
-.open-button {
+.remove-button {
   position: absolute;
   top: 1rem;
   right: 1rem;
@@ -199,9 +160,6 @@ p {
   .album-image {
     width: 145px;
     height: 145px;
-  }
-  .album-actions {
-    grid-template-columns: 1fr 1fr;
   }
 }
 
