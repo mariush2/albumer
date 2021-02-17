@@ -105,6 +105,10 @@ body {
   position: relative;
 }
 
+#app {
+  padding-bottom: 2rem;
+}
+
 #bar {
   position: fixed;
   z-index: 1000;
