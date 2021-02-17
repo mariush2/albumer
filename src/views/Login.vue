@@ -125,7 +125,7 @@ export default {
         // Pasted sms code
         const digits = value.toString().split('');
         for (const [index, digit] of digits.entries()) {
-          this.code[index] = Number(digit);
+          this.code[index] = digit;
         }
         this.$nextTick(() => this.$refs['confirmButton'].$el.focus());
       } else if (index != 0) {

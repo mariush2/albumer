@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <div class="header">
-      <h1 ref="title">Your current list of albums, sorted by</h1>
+      <h1 ref="title">Albums you've listened to so far, sorted by</h1>
       <el-select
         ref="sorting"
         v-model="sorting"
@@ -19,7 +19,11 @@
     </div>
     <div class="album-grid">
       <template v-for="(album, index) in albums">
-        <album-list :key="`${index}-${album.id}`" :album="album" @deleted="updateAlbumsInList" />
+        <album-listened
+          :key="`${index}-${album.id}`"
+          :album="album"
+          @deleted="updateAlbumsInListened"
+        />
       </template>
     </div>
   </div>
@@ -28,10 +32,10 @@
 <script>
 import { mapActions, mapState } from 'vuex';
 import { Loading } from 'element-ui';
-import AlbumList from '../components/AlbumList.vue';
+import AlbumListened from '../components/AlbumListened.vue';
 export default {
-  name: 'List',
-  components: { AlbumList },
+  name: 'Listened',
+  components: { AlbumListened },
   data: function() {
     return {
       albums: [],
@@ -54,11 +58,11 @@ export default {
         },
         {
           value: 'added_asc',
-          label: 'Oldest - added',
+          label: 'Oldest - listened',
         },
         {
           value: 'added_des',
-          label: 'Newest - added',
+          label: 'Newest - listened',
         },
       ],
       sorting: 'added_des',
@@ -66,7 +70,7 @@ export default {
     };
   },
   computed: mapState({
-    albumsInList: state => state.albumsInList,
+    albumsInListened: state => state.albumsInListened,
     accessToken: state => state.accessToken,
   }),
   async mounted() {
@@ -74,20 +78,18 @@ export default {
       fullscreen: true,
       background: 'rgba(0, 0, 0, 0.5)',
     });
-    await this.refreshAlbumsInList();
     await this.refreshAlbumsInListened();
-    await this.refreshAccessToken();
     const interval = setInterval(() => {
-      if (this.albumsInList && this.albumsInList.length >= 0) {
+      if (this.albumsInListened && this.albumsInListened.length >= 0) {
         clearInterval(interval);
-        this.albums = this.albumsInList;
+        this.albums = this.albumsInListened;
         this.changeSorting();
         loader.close();
       }
     }, 800);
   },
   methods: {
-    updateAlbumsInList(removedAlbumId) {
+    updateAlbumsInListened(removedAlbumId) {
       this.albums = this.albums.filter(album => album.id != removedAlbumId);
     },
     changeSorting() {
@@ -130,7 +132,7 @@ export default {
           break;
       }
     },
-    ...mapActions(['refreshAlbumsInList', 'refreshAlbumsInListened', 'refreshAccessToken']),
+    ...mapActions(['refreshAlbumsInListened']),
   },
 };
 </script>

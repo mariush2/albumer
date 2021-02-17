@@ -41,7 +41,7 @@ import AlbumSkeleton from '@/components/AlbumSkeleton.vue';
 import Searchbar from '@/components/Searchbar.vue';
 
 export default {
-  name: 'Home',
+  name: 'FindAlbums',
   components: {
     Album,
     AlbumSkeleton,
@@ -121,6 +121,11 @@ export default {
   padding-top: 3rem;
 }
 
+@media (max-width: 420px) {
+  .header {
+    text-align: left;
+  }
+}
 @media (min-width: 1000px) {
   .album-grid {
     grid-template-columns: 1fr 1fr;
