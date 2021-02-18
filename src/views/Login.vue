@@ -50,6 +50,11 @@
               maxlength="1"
               type="number"
               @input="event => updateValue(event.target.value, index)"
+              @keyup.delete="
+                () => {
+                  if (index != 0) $refs[`${index - 1}-input`][0].focus();
+                }
+              "
             />
           </template>
         </div>
@@ -128,9 +133,6 @@ export default {
           this.code[index] = digit;
         }
         this.$nextTick(() => this.$refs['confirmButton'].$el.focus());
-      } else if (index != 0) {
-        // Deleted
-        this.$refs[`${index - 1}-input`][0].focus();
       }
     },
     isNumber: function(evt) {
@@ -225,7 +227,19 @@ export default {
   height: 50px;
   text-align: center;
   font-size: 30px;
-  border-radius: 3px;
+  border-radius: 0;
+  padding: 0;
+}
+
+.code-grid .digit-input {
+  &:first-child {
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+  }
+  &:last-child {
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+  }
 }
 .digit-input::-webkit-outer-spin-button,
 .digit-input::-webkit-inner-spin-button {
@@ -238,9 +252,6 @@ export default {
   align-items: center;
   justify-items: center;
   margin: 3rem auto 5rem auto;
-}
-.code-divider {
-  font-size: 40px;
 }
 </style>
 
