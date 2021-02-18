@@ -1,0 +1,17 @@
+[debug] [2021-02-18T13:20:29.527Z] ----------------------------------------------------------------------
+[debug] [2021-02-18T13:20:29.529Z] Command:       /usr/local/Cellar/node/15.4.0/bin/node /usr/local/bin/firebase deploy
+[debug] [2021-02-18T13:20:29.529Z] CLI Version:   9.4.0
+[debug] [2021-02-18T13:20:29.529Z] Platform:      darwin
+[debug] [2021-02-18T13:20:29.529Z] Node Version:  v15.4.0
+[debug] [2021-02-18T13:20:29.530Z] Time:          Thu Feb 18 2021 14:20:29 GMT+0100 (Central European Standard Time)
+[debug] [2021-02-18T13:20:29.531Z] ----------------------------------------------------------------------
+[debug] [2021-02-18T13:20:29.531Z] 
+[debug] [2021-02-18T13:20:29.538Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2021-02-18T13:20:29.539Z] > authorizing via signed-in user
+[debug] [2021-02-18T13:20:29.539Z] [iam] checking project albumer-cdb7c for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2021-02-18T13:20:29.541Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2021-02-18T13:20:29.541Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2021-02-18T13:20:29.713Z] <<< HTTP RESPONSE 200 {"date":"Thu, 18 Feb 2021 13:20:29 GMT","expires":"Mon, 01 Jan 1990 00:00:00 GMT","cache-control":"no-cache, no-store, max-age=0, must-revalidate","pragma":"no-cache","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-02-18T13:20:29.744Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/albumer-cdb7c:testIamPermissions  
+ {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get","firebasehosting.sites.update"]}
