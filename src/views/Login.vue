@@ -205,10 +205,14 @@ export default {
   margin: auto;
   display: grid;
   grid-template-columns: 1fr 0;
+  position: relative;
 
   > i {
-    margin-left: 5px;
     font-size: 28px;
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translate(0, -50%);
     color: #48e06e;
   }
 
