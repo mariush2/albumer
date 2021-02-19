@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="content-container">
-      <h1>Get started</h1>
+      <img src="@/assets/written_logo.svg" class="logo" />
       <p>
         Albumer uses SMS to login. That makes it easier for you and us.
       </p>
@@ -172,10 +172,9 @@ export default {
   display: block;
   text-align: center;
 
-  > h1 {
-    font-size: 84px;
-    color: white;
-    margin-bottom: 0;
+  > .logo {
+    height: 80px;
+    margin: 1rem 0;
   }
 
   > p {
@@ -191,12 +190,6 @@ export default {
     margin: 1rem auto 3rem;
     width: fit-content;
     height: 74px;
-  }
-}
-
-@media (max-width: 1000px) {
-  .content-container > h1 {
-    font-size: 52px;
   }
 }
 
