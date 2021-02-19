@@ -21,7 +21,7 @@
           </div>
         </div>
         <div class="album-actions">
-          <el-button type="info" plain icon="el-icon-paperclip" @click="openAlbum">
+          <el-button type="info" plain icon="el-icon-connection" @click="openAlbum">
             Open
           </el-button>
         </div>

@@ -4,7 +4,10 @@
       <div id="bar">
         <el-button circle icon="el-icon-menu" size="medium" type="default" @click="drawer = true" />
       </div>
-      <el-drawer title="Pages" :visible.sync="drawer" size="min-content" direction="ltr">
+      <el-drawer :visible.sync="drawer" size="min-content" :show-close="false" direction="ltr">
+        <template slot="title">
+          <img class="drawer-title" src="@/assets/written_logo.svg" />
+        </template>
         <el-menu
           background-color="#b65b6b"
           text-color="#fff"
@@ -141,5 +144,8 @@ body {
   &:hover {
     background: rgba(0, 0, 0, 0.2);
   }
+}
+.drawer-title {
+  height: 50px;
 }
 </style>
