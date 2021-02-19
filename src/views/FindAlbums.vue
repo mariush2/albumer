@@ -2,7 +2,7 @@
   <div>
     <div class="header">
       <h1>Find your next album</h1>
-      <Searchbar placeholder="Find an album..." @search="updateSearchString" />
+      <Album-searchbar placeholder="Find an album..." @search="updateSearchString" />
     </div>
     <div>
       <template v-if="searching">
@@ -38,14 +38,14 @@ import { mapState, mapActions } from 'vuex';
 
 import Album from '@/components/Album.vue';
 import AlbumSkeleton from '@/components/AlbumSkeleton.vue';
-import Searchbar from '@/components/Searchbar.vue';
+import AlbumSearchbar from '@/components/AlbumSearchbar.vue';
 
 export default {
   name: 'FindAlbums',
   components: {
     Album,
     AlbumSkeleton,
-    Searchbar,
+    AlbumSearchbar,
   },
   data: function() {
     return {
