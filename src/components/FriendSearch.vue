@@ -3,15 +3,30 @@
     <div class="card-body">
       <i class="el-icon-user" />
       <div class="friend-name">{{ user.username }}</div>
+
       <el-button
-        v-if="!removing"
-        type="text"
-        circle
+        v-if="inFriendsList"
+        class="add-button"
+        type="success"
         plain
-        icon="el-icon-delete"
-        @click="removeFriend"
-      />
-      <el-button v-else type="text" circle plain icon="el-icon-loading" disabled />
+        icon="el-icon-check"
+        disabled
+      >
+        Added
+      </el-button>
+      <el-button
+        v-else-if="!adding"
+        class="add-button"
+        type="success"
+        plain
+        icon="el-icon-plus"
+        @click="addFriend"
+      >
+        Add
+      </el-button>
+      <el-button v-else class="add-button" type="success" plain icon="el-icon-loading" disabled>
+        Adding
+      </el-button>
     </div>
   </el-card>
 </template>
@@ -19,48 +34,40 @@
 <script>
 import { mapActions } from 'vuex';
 
-const removeDelay = 500;
+const addingDelay = 500;
 
 export default {
-  name: 'Friend',
+  name: 'FriendSearch',
   props: {
     user: {
       type: Object,
       required: true,
     },
+    inFriendsList: {
+      type: Boolean,
+      required: true,
+    },
   },
   data: function() {
     return {
-      removing: false,
+      adding: false,
     };
   },
   methods: {
-    removeFriend() {
-      this.removing = true;
+    addFriend() {
+      this.adding = true;
       setTimeout(async () => {
-        await this.removeFromFriendsList(this.user.uid);
+        await this.addToFriendsList(this.user);
         await this.setFriendsListInDB();
-        this.removing = false;
-      }, removeDelay);
+        this.adding = false;
+      }, addingDelay);
     },
-    ...mapActions(['removeFromFriendsList', 'setFriendsListInDB']),
+    ...mapActions(['addToFriendsList', 'setFriendsListInDB']),
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.card {
-  border-radius: 0;
-
-  &:first-child {
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
-  }
-  &:last-child {
-    border-bottom-left-radius: 4px;
-    border-bottom-right-radius: 4px;
-  }
-}
 .card-body {
   display: grid;
   grid-template-columns: 1fr 4fr auto;

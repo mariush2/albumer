@@ -19,6 +19,8 @@ firebase.initializeApp(firebaseConfig);
 // utils
 const db = firebase.database();
 const auth = firebase.auth();
-
+const functionsServer = 'https://us-central1-albumer-cdb7c.cloudfunctions.net';
+// Actual 'https://us-central1-albumer-cdb7c.cloudfunctions.net'
+// Local 'http://localhost:5001/albumer-cdb7c/us-central1';
 // export utils/refs
-export { db, auth };
+export { db, auth, functionsServer };

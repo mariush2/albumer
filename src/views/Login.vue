@@ -18,13 +18,7 @@
         <i v-show="validPhone" class="el-icon-check" />
       </div>
       <div id="recaptcha-container"></div>
-      <el-button
-        ref="sendButton"
-        :disabled="!validPhone || !validReCaptcha"
-        type="success"
-        plain
-        @click="sendCode"
-      >
+      <el-button ref="sendButton" type="success" plain @click="sendCode">
         Send Me An SMS
       </el-button>
     </div>

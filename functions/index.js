@@ -20,10 +20,10 @@ const validateFirebaseIdToken = async (req, res, next) => {
     !(req.cookies && req.cookies.__session)
   ) {
     console.error(
-        'No Firebase ID token was passed in the Authorization header.',
-        'Make sure you authorize your request:',
-        'Authorization: Bearer <Firebase ID Token>',
-        'or by passing a "__session" cookie.',
+      'No Firebase ID token was passed in the Authorization header.',
+      'Make sure you authorize your request:',
+      'Authorization: Bearer <Firebase ID Token>',
+      'or by passing a "__session" cookie.'
     );
     res.status(403).send('Unauthorized');
     return;
@@ -60,6 +60,7 @@ const validateFirebaseIdToken = async (req, res, next) => {
 app.use(cors);
 app.use(cookieParser);
 app.use(validateFirebaseIdToken);
+app.use(express.json());
 app.get('/spotifyToken', (req, res) => {
   console.log(functions.config());
   const auth = `${functions.config().spotify.client_id}:${
@@ -86,6 +87,78 @@ app.get('/spotifyToken', (req, res) => {
       console.error(error, response);
     }
   });
+});
+
+app.get('/getUsersWithUsername', async (req, res) => {
+  const username = req.query.username;
+  const found = [];
+  const findAllUsers = async nextPageToken => {
+    // List batch of users, 1000 at a time.
+    await admin
+      .auth()
+      .listUsers(1000, nextPageToken)
+      .then(listUsersResult => {
+        listUsersResult.users.forEach(userRecord => {
+          const user = userRecord.toJSON();
+          if (user.displayName && user.displayName.toLowerCase().includes(username.toLowerCase())) {
+            found.push({
+              username: user.displayName,
+              uid: user.uid,
+            });
+          }
+        });
+        if (listUsersResult.pageToken) {
+          // List next batch of users.
+          findAllUsers(listUsersResult.pageToken);
+        }
+        return;
+      });
+  };
+  await findAllUsers();
+  res.send({ result: found });
+});
+
+app.post('/setUsername', async (req, res) => {
+  const body = JSON.parse(req.body);
+  const wantedUsername = body.username;
+  const uid = body.uid;
+  let found = false;
+  const findAllUsers = async nextPageToken => {
+    // List batch of users, 1000 at a time.
+    await admin
+      .auth()
+      .listUsers(1000, nextPageToken)
+      .then(listUsersResult => {
+        listUsersResult.users.forEach(userRecord => {
+          const user = userRecord.toJSON();
+          if (
+            user.displayName &&
+            user.displayName.toUpperCase().includes(wantedUsername.toUpperCase()) &&
+            user.uid != uid
+          ) {
+            found = true;
+            return;
+          }
+        });
+        if (listUsersResult.pageToken) {
+          // List next batch of users.
+          findAllUsers(listUsersResult.pageToken);
+        }
+        return;
+      });
+  };
+  await findAllUsers();
+  if (!found) {
+    // No one else has that username, OK to use that one
+    // All usernames must be uppercase
+    admin.auth().updateUser(uid, {
+      displayName: wantedUsername,
+    });
+    res.sendStatus(200);
+  } else {
+    // Someone else has that username, return error
+    res.sendStatus(403);
+  }
 });
 
 // This HTTPS endpoint can only be accessed by your Firebase Users.

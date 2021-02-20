@@ -5,36 +5,7 @@
       <h1>Profile</h1>
     </div>
     <div class="username">
-      <template v-if="savedUsername != null">
-        <h2>Your current username</h2>
-        <el-input v-model="username">
-          <el-button
-            v-if="username != savedUsername"
-            slot="append"
-            icon="el-icon-check"
-            type="success"
-            class="save-button"
-            @click="updateUsername"
-          >
-            Save
-          </el-button>
-        </el-input>
-      </template>
-      <template v-else>
-        <h2>You haven’t yet created a username,</h2>
-        <el-input v-model="username" placeholder="Enter a username">
-          <el-button
-            v-if="username != savedUsername"
-            slot="append"
-            icon="el-icon-check"
-            type="success"
-            class="save-button"
-            @click="updateUsername"
-          >
-            Save
-          </el-button>
-        </el-input>
-      </template>
+      <UsernameInput />
     </div>
     <div class="friends-list">
       <div class="header">
@@ -42,20 +13,35 @@
         <i class="el-icon-user"></i>
         <h2>Friends list</h2>
       </div>
-      <p>To recommend an album to someone, you need to have them in your friends list</p>
-      <div class="content">
-        <Friend v-for="friend in friendslist" :key="friend.phone" :user="friend" />
+      <p v-if="friendsList.length > 0">
+        To recommend an album to someone, you need to have them in your friends list
+      </p>
+      <p v-else>You don't have any friends yet:(</p>
+      <div v-if="friendsList.length > 0" class="grid">
+        <Friend v-for="friend in friendsList" :key="friend.name" :user="friend" />
       </div>
     </div>
     <div class="friends-search">
-      <h2>Find more friends</h2>
-      <FriendSearchbar @updated="updateFriendsearch" @startedSearch="searching = true" />
+      <h2>
+        <i class="el-icon-search" />
+        Find more friends
+      </h2>
+      <FriendSearchbar
+        @updated="updateFriendsearch"
+        @startedSearch="searching = true"
+        @searchDone="searchResult"
+      />
       <div class="search-grid">
         <template v-if="searching">
-          <FriendSkeleton v-for="index in 2" :key="index" />
+          <FriendSkeleton v-for="index in 4" :key="index" />
         </template>
         <template v-else>
-          <h1>Result</h1>
+          <FriendSearch
+            v-for="friend in friendSearch"
+            :key="friend.username"
+            :user="friend"
+            :in-friends-list="friendsList.some(item => item.uid == friend.uid)"
+          />
         </template>
       </div>
     </div>
@@ -64,67 +50,56 @@
 
 <script>
 import { auth } from '../firebase';
+import { mapActions, mapState } from 'vuex';
+import { Loading } from 'element-ui';
 
 import Friend from '../components/Friend.vue';
+import FriendSearch from '../components/FriendSearch.vue';
 import FriendSearchbar from '../components/FriendSearchbar.vue';
 import FriendSkeleton from '../components/FriendSkeleton.vue';
+import UsernameInput from '../components/UsernameInput.vue';
 
 export default {
   name: 'Profile',
   components: {
     Friend,
+    FriendSearch,
     FriendSearchbar,
     FriendSkeleton,
+    UsernameInput,
   },
   data: function() {
     return {
-      username: null,
-      savedUsername: null,
-      friendslist: [
-        {
-          username: 'Tor',
-          phone: '+4712345678',
-        },
-        {
-          username: 'Gudfinn',
-          phone: '+4712345688',
-        },
-      ],
       friendSearch: [],
       searching: false,
     };
   },
+  computed: mapState({
+    friendsList: state => state.friendsList,
+  }),
   mounted: function() {
-    // Get current username from firebase
-    const user = auth.currentUser;
-    this.savedUsername = user.displayName;
-    this.username = this.savedUsername;
+    const loader = Loading.service({
+      fullscreen: true,
+      background: 'rgba(0, 0, 0, 0.5)',
+    });
+    this.refreshFriendsList();
+    const interval = setInterval(() => {
+      if (this.friendsList && this.friendsList.length >= 0) {
+        clearInterval(interval);
+        loader.close();
+      }
+    }, 800);
   },
   methods: {
     updateFriendsearch(newList) {
       this.friendSearch = newList;
     },
-    async updateUsername() {
-      const user = auth.currentUser;
-
-      user
-        .updateProfile({
-          displayName: this.username,
-        })
-        .then(() => {
-          // Update successful.
-          this.$message({
-            message: 'Updated username.',
-            type: 'success',
-          });
-          this.savedUsername = this.username;
-        })
-        .catch(error => {
-          // An error happened.
-          this.$message.error('Error occured when trying to update username');
-          console.error(error);
-        });
+    searchResult(result) {
+      const uid = auth.currentUser.uid;
+      this.friendSearch = result.filter(item => item.uid != uid);
+      this.searching = false;
     },
+    ...mapActions(['refreshFriendsList']),
   },
 };
 </script>
@@ -148,11 +123,6 @@ export default {
 
   > .username {
     margin-bottom: 2rem;
-    > h2 {
-      color: white;
-      margin: 0.5rem 0;
-      font-weight: 400;
-    }
   }
 
   > .friends-list {
@@ -163,19 +133,28 @@ export default {
 
       > i {
         font-size: 28px;
+        margin-right: 3px;
         &:first-child {
           margin-right: -9px;
         }
       }
       > h2 {
         margin-bottom: 1rem;
+        font-weight: 400;
       }
     }
     > p {
       margin: 0;
     }
-    > .content {
-      padding: 1rem 0;
+    > .grid {
+      display: grid;
+      margin: 1rem 0 3rem 0;
+      grid-template-columns: 1fr;
+      max-height: 20rem;
+      overflow-y: scroll;
+      > p {
+        font-weight: 300;
+      }
     }
   }
 
@@ -191,8 +170,5 @@ export default {
       margin-top: 10px;
     }
   }
-}
-.save-button {
-  color: #48e06e !important;
 }
 </style>

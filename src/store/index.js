@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { auth, db } from '../firebase';
+import { auth, db, functionsServer } from '../firebase';
 
 Vue.use(Vuex);
 
@@ -10,6 +10,7 @@ export default new Vuex.Store({
     albumsInSearch: [],
     albumsInList: null,
     albumsInListened: [],
+    friendsList: [],
     nextUrl: '',
     searching: false,
     limit: 20,
@@ -47,8 +48,23 @@ export default new Vuex.Store({
     setAlbumsInListened(state, payload) {
       state.albumsInListened = payload.albums;
     },
+    setFriendsList(state, payload) {
+      state.friendsList = payload.friends;
+    },
   },
   actions: {
+    async refreshAlbumsInList({ commit }) {
+      const userId = auth.currentUser.uid;
+      await db
+        .ref(`/list/${userId}`)
+        .once('value')
+        .then(snapshot => {
+          const currentList = snapshot.val() != null ? snapshot.val().albums : [];
+          commit('setAlbumsInList', {
+            albums: currentList,
+          });
+        });
+    },
     async setAlbumListDB({ state }) {
       // Write to database
       const userId = auth.currentUser.uid;
@@ -56,26 +72,11 @@ export default new Vuex.Store({
         albums: state.albumsInList,
       });
     },
-    async setAlbumListenedDB({ state }) {
-      // Write to database
-      const userId = auth.currentUser.uid;
-      await db.ref('listened/' + userId).set({
-        albums: state.albumsInListened,
-      });
-    },
     removeFromAlbumsInList({ commit, state }, album) {
       commit('setAlbumsInList', { albums: state.albumsInList.filter(item => item.id != album) });
     },
-    removeFromAlbumsInListened({ commit, state }, album) {
-      commit('setAlbumsInListened', {
-        albums: state.albumsInListened.filter(item => item.id != album),
-      });
-    },
     addToAlbumsInList({ commit, state }, album) {
       commit('setAlbumsInList', { albums: [...state.albumsInList, album] });
-    },
-    addToAlbumsInListened({ commit, state }, album) {
-      commit('setAlbumsInListened', { albums: [...state.albumsInListened, album] });
     },
     async refreshAlbumsInListened({ commit }) {
       const userId = auth.currentUser.uid;
@@ -89,32 +90,57 @@ export default new Vuex.Store({
           });
         });
     },
-    async refreshAlbumsInList({ commit }) {
+    async setAlbumListenedDB({ state }) {
+      // Write to database
+      const userId = auth.currentUser.uid;
+      await db.ref('listened/' + userId).set({
+        albums: state.albumsInListened,
+      });
+    },
+    addToAlbumsInListened({ commit, state }, album) {
+      commit('setAlbumsInListened', { albums: [...state.albumsInListened, album] });
+    },
+    removeFromAlbumsInListened({ commit, state }, album) {
+      commit('setAlbumsInListened', {
+        albums: state.albumsInListened.filter(item => item.id != album),
+      });
+    },
+    async refreshFriendsList({ commit }) {
       const userId = auth.currentUser.uid;
       await db
-        .ref(`/list/${userId}`)
+        .ref(`/friends/${userId}`)
         .once('value')
         .then(snapshot => {
-          const currentList = snapshot.val() != null ? snapshot.val().albums : [];
-          commit('setAlbumsInList', {
-            albums: currentList,
+          const currentList = snapshot.val() != null ? snapshot.val().friends : [];
+          commit('setFriendsList', {
+            friends: currentList,
           });
         });
+    },
+    async setFriendsListInDB({ state }) {
+      // Write to database
+      const userId = auth.currentUser.uid;
+      await db.ref('friends/' + userId).set({
+        friends: state.friendsList,
+      });
+    },
+    addToFriendsList({ commit, state }, friend) {
+      commit('setFriendsList', { friends: [...state.friendsList, friend] });
+    },
+    removeFromFriendsList({ commit, state }, friend) {
+      commit('setFriendsList', { friends: state.friendsList.filter(item => item.uid != friend) });
     },
     async refreshAccessToken({ commit, state }) {
       const userId = await auth.currentUser.getIdToken();
       const headers = new Headers({
         method: 'GET',
         Authorization: `Bearer ${userId}`,
-        'Access-Control-Allow-Origin': 'https://us-central1-albumer-cdb7c.cloudfunctions.net',
+        'Access-Control-Allow-Origin': functionsServer,
         'Access-Control-Allow-Credentials': 'true',
       });
-      const response = await fetch(
-        'https://us-central1-albumer-cdb7c.cloudfunctions.net/app/spotifyToken',
-        {
-          headers,
-        }
-      );
+      const response = await fetch(`${functionsServer}/app/spotifyToken`, {
+        headers,
+      });
       const body = await response.json();
       try {
         commit('changeAccessToken', { token: body.access_token });
