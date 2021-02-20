@@ -5,8 +5,36 @@
       <h1>Profile</h1>
     </div>
     <div class="username">
-      <h2>Your current username</h2>
-      <el-input v-model="username" />
+      <template v-if="savedUsername != null">
+        <h2>Your current username</h2>
+        <el-input v-model="username">
+          <el-button
+            v-if="username != savedUsername"
+            slot="append"
+            icon="el-icon-check"
+            type="success"
+            class="save-button"
+            @click="updateUsername"
+          >
+            Save
+          </el-button>
+        </el-input>
+      </template>
+      <template v-else>
+        <h2>You haven’t yet created a username,</h2>
+        <el-input v-model="username" placeholder="Enter a username">
+          <el-button
+            v-if="username != savedUsername"
+            slot="append"
+            icon="el-icon-check"
+            type="success"
+            class="save-button"
+            @click="updateUsername"
+          >
+            Save
+          </el-button>
+        </el-input>
+      </template>
     </div>
     <div class="friends-list">
       <div class="header">
@@ -24,7 +52,7 @@
       <FriendSearchbar @updated="updateFriendsearch" @startedSearch="searching = true" />
       <div class="search-grid">
         <template v-if="searching">
-          <FriendSkeleton v-for="index in 4" :key="index" />
+          <FriendSkeleton v-for="index in 2" :key="index" />
         </template>
         <template v-else>
           <h1>Result</h1>
@@ -35,20 +63,23 @@
 </template>
 
 <script>
+import { auth } from '../firebase';
+
 import Friend from '../components/Friend.vue';
 import FriendSearchbar from '../components/FriendSearchbar.vue';
 import FriendSkeleton from '../components/FriendSkeleton.vue';
 
 export default {
+  name: 'Profile',
   components: {
     Friend,
     FriendSearchbar,
     FriendSkeleton,
   },
-  name: 'Profile',
   data: function() {
     return {
-      username: 'blablabal',
+      username: null,
+      savedUsername: null,
       friendslist: [
         {
           username: 'Tor',
@@ -63,9 +94,36 @@ export default {
       searching: false,
     };
   },
+  mounted: function() {
+    // Get current username from firebase
+    const user = auth.currentUser;
+    this.savedUsername = user.displayName;
+    this.username = this.savedUsername;
+  },
   methods: {
     updateFriendsearch(newList) {
       this.friendSearch = newList;
+    },
+    async updateUsername() {
+      const user = auth.currentUser;
+
+      user
+        .updateProfile({
+          displayName: this.username,
+        })
+        .then(() => {
+          // Update successful.
+          this.$message({
+            message: 'Updated username.',
+            type: 'success',
+          });
+          this.savedUsername = this.username;
+        })
+        .catch(error => {
+          // An error happened.
+          this.$message.error('Error occured when trying to update username');
+          console.error(error);
+        });
     },
   },
 };
@@ -93,6 +151,7 @@ export default {
     > h2 {
       color: white;
       margin: 0.5rem 0;
+      font-weight: 400;
     }
   }
 
@@ -132,5 +191,8 @@ export default {
       margin-top: 10px;
     }
   }
+}
+.save-button {
+  color: #48e06e !important;
 }
 </style>
