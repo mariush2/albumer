@@ -14,6 +14,10 @@
           active-text-color="#ffd04b"
           :default-active="defaultActive"
         >
+          <el-menu-item index="0" @click="handleClick('/profile')">
+            <i class="el-icon-user"></i>
+            <span>Profile</span>
+          </el-menu-item>
           <el-menu-item index="1" @click="handleClick('/')">
             <i class="el-icon-search"></i>
             <span>Find albums</span>
@@ -51,6 +55,9 @@ export default {
   mounted: function() {
     setTimeout(() => {
       switch (this.$router.history.current.path) {
+        case '/profile':
+          this.defaultActive = '0';
+          break;
         case '/':
           this.defaultActive = '1';
           break;
