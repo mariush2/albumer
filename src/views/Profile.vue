@@ -171,4 +171,17 @@ export default {
     }
   }
 }
+
+@media (min-width: 500px) {
+  .content {
+    width: 500px;
+    margin: auto;
+    > .header {
+      justify-content: center;
+    }
+    > .username {
+      max-width: 500px;
+    }
+  }
+}
 </style>

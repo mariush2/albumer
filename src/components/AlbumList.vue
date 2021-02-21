@@ -56,7 +56,7 @@
       circle
       type="info"
       size="mini"
-      icon="el-icon-connection"
+      icon="el-icon-link"
       @click="openAlbum"
     />
   </el-card>
