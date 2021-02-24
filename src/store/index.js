@@ -11,6 +11,7 @@ export default new Vuex.Store({
     albumsInList: null,
     albumsInListened: [],
     friendsList: [],
+    recommendations: [],
     nextUrl: '',
     searching: false,
     limit: 20,
@@ -51,8 +52,35 @@ export default new Vuex.Store({
     setFriendsList(state, payload) {
       state.friendsList = payload.friends;
     },
+    setRecommendations(state, payload) {
+      state.recommendations = payload.albums;
+    },
   },
   actions: {
+    async refreshRecommendations({ commit }) {
+      const userId = auth.currentUser.uid;
+      await db
+        .ref(`/recommendations/${userId}`)
+        .once('value')
+        .then(snapshot => {
+          const currentList = snapshot.val() != null ? snapshot.val().albums : [];
+          commit('setRecommendations', {
+            albums: currentList,
+          });
+        });
+    },
+    async setRecommendationsDB({ state }) {
+      // Write to database
+      const userId = auth.currentUser.uid;
+      await db.ref('recommendations/' + userId).set({
+        albums: state.recommendations,
+      });
+    },
+    removeFromRecommendations({ commit, state }, album) {
+      commit('setRecommendations', {
+        albums: state.recommendations.filter(item => item.id != album),
+      });
+    },
     async refreshAlbumsInList({ commit }) {
       const userId = auth.currentUser.uid;
       await db

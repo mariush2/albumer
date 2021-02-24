@@ -5,13 +5,13 @@
       <div class="friend-name">{{ user.username }}</div>
       <el-button
         v-if="!removing"
+        class="remove-button"
         type="text"
         circle
-        plain
         icon="el-icon-delete"
         @click="removeFriend"
       />
-      <el-button v-else type="text" circle plain icon="el-icon-loading" disabled />
+      <el-button v-else class="remove-button" type="text" circle icon="el-icon-loading" disabled />
     </div>
   </el-card>
 </template>
@@ -63,8 +63,9 @@ export default {
 }
 .card-body {
   display: grid;
-  grid-template-columns: 1fr 4fr auto;
+  grid-template-columns: 1fr 4fr 2fr;
   align-items: center;
+  grid-gap: 5px;
 }
 
 i {
@@ -76,6 +77,11 @@ i {
   border-radius: 100%;
 }
 
+.remove-button {
+  width: fit-content;
+  justify-self: end;
+}
+
 .friend-name {
   overflow-x: hidden;
   position: relative;
@@ -83,10 +89,10 @@ i {
 .friend-name::before {
   content: '';
   position: absolute;
-  left: 0;
+  right: 0;
   top: 0;
-  width: 100%;
+  width: 25px;
   height: 100%;
-  background: linear-gradient(90deg, transparent 150px, white);
+  background: linear-gradient(90deg, transparent, #eff1f3);
 }
 </style>

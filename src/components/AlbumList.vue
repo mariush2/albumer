@@ -1,6 +1,6 @@
 <template>
-  <el-card shadow="never" class="card">
-    <div class="card-body">
+  <div>
+    <div class="album-body">
       <div class="album-image">
         <el-image fit="fill" :src="album.images[0].url" />
       </div>
@@ -21,45 +21,32 @@
           </div>
         </div>
         <div class="album-actions">
-          <el-button
-            v-if="!isListened"
-            type="success"
-            plain
-            icon="el-icon-check"
-            @click="markListened"
-          >
-            {{ mobileButtons ? '' : 'Listened' }}
+          <el-button v-if="!isListened" plain icon="el-icon-check" @click="markListened">
+            Mark as listened
           </el-button>
           <el-button v-else type="success" plain icon="el-icon-loading">
-            Listened
+            Marking
           </el-button>
-          <el-button
-            v-if="!isRemoving && !isListened"
-            type="danger"
-            plain
-            icon="el-icon-delete"
-            @click="removeAlbum"
-          />
-          <el-button
-            v-else-if="!isListened"
-            class="remove-button"
-            type="danger"
-            plain
-            icon="el-icon-loading"
-          />
         </div>
+        <el-dropdown size="small" class="more-actions" @command="handleCommand">
+          <span class="el-dropdown-link">
+            <i class="el-icon-more"></i>
+          </span>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item icon="el-icon-link" command="a">
+              Open
+            </el-dropdown-item>
+            <el-dropdown-item icon="el-icon-arrow-right" command="b">
+              Share
+            </el-dropdown-item>
+            <el-dropdown-item icon="el-icon-delete" command="c">
+              Remove
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
       </div>
     </div>
-    <el-button
-      class="open-button"
-      plain
-      circle
-      type="info"
-      size="mini"
-      icon="el-icon-connection"
-      @click="openAlbum"
-    />
-  </el-card>
+  </div>
 </template>
 
 <script>
@@ -76,22 +63,23 @@ export default {
   },
   data: function() {
     return {
-      isRemoving: false,
       isListened: false,
     };
   },
-  computed: {
-    mobileButtons: function() {
-      return screen.width < 400;
-    },
-  },
   methods: {
+    handleCommand(command) {
+      if (command === 'a') {
+        this.openAlbum();
+      } else if (command === 'b') {
+        this.$emit('share');
+      } else if (command === 'c') {
+        this.removeAlbum();
+      }
+    },
     removeAlbum() {
-      this.isRemoving = true;
       setTimeout(async () => {
         await this.removeFromAlbumsInList(this.album.id);
         await this.setAlbumListDB();
-        this.isRemoving = false;
         this.$emit('deleted', this.album.id);
       }, actionDelay);
     },
@@ -129,19 +117,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.card-body {
+.album-body {
   display: grid;
   grid-template-columns: 1fr 3fr;
   align-items: center;
   position: relative;
+  width: 440px;
   grid-gap: 15px;
-  max-width: 380px;
-}
-
-.card {
-  padding: 0;
-  position: relative;
-  width: 100%;
 }
 
 p {
@@ -153,10 +135,11 @@ p {
   display: grid;
   grid-gap: 15px;
   height: 100%;
+  width: 250px;
 }
 .album-image {
-  width: 165px;
-  height: 165px;
+  width: 175px;
+  height: 175px;
   box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.2);
 }
 .album-title,
@@ -177,17 +160,16 @@ p {
 }
 
 .album-actions {
-  grid-template-columns: 4fr 1fr;
+  grid-template-columns: 1fr;
   display: grid;
   align-self: flex-end;
 }
 
-.open-button {
+.more-actions {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
+  top: 0;
+  right: 0;
 }
-
 @media (max-width: 450px) {
   .album-image {
     width: 150px;
@@ -200,15 +182,39 @@ p {
     width: 145px;
     height: 145px;
   }
-  .album-actions {
-    grid-template-columns: 1fr 1fr;
-  }
 }
 
 @media (max-width: 405px) {
   .album-image {
     width: 125px;
     height: 125px;
+  }
+}
+@media (max-width: 440px) {
+  .album-content {
+    width: 180px;
+  }
+}
+
+@media (max-width: 515px) {
+  .album-body {
+    width: 400px;
+  }
+}
+@media (max-width: 465px) {
+  .album-body {
+    width: 380px;
+  }
+}
+
+@media (max-width: 440px) {
+  .album-body {
+    width: 350px;
+  }
+}
+@media (max-width: 405px) {
+  .album-body {
+    width: 320px;
   }
 }
 </style>

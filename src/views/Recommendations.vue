@@ -1,7 +1,10 @@
 <template>
   <div class="content">
     <div class="header">
-      <h1 ref="title">Albums you've listened to so far, sorted by</h1>
+      <h1 ref="title">
+        <i class="el-icon-star-on" />
+        Recommendations
+      </h1>
       <el-select
         ref="sorting"
         v-model="sorting"
@@ -19,7 +22,7 @@
     </div>
     <div class="album-grid">
       <template v-for="(album, index) in albums">
-        <album :key="`${index}-${album.id}`" :album="album" @deleted="updateAlbumsInListened" />
+        <album-recommendation :key="`${index}-${album.id}`" :album="album" @updated="update" />
       </template>
     </div>
   </div>
@@ -28,10 +31,10 @@
 <script>
 import { mapActions, mapState } from 'vuex';
 import { Loading } from 'element-ui';
-import Album from '../components/Album.vue';
+import AlbumRecommendation from '../components/AlbumRecommendation.vue';
 export default {
   name: 'Listened',
-  components: { Album },
+  components: { AlbumRecommendation },
   data: function() {
     return {
       albums: [],
@@ -54,11 +57,11 @@ export default {
         },
         {
           value: 'added_asc',
-          label: 'Oldest - listened',
+          label: 'Oldest - recommendation',
         },
         {
           value: 'added_des',
-          label: 'Newest - listened',
+          label: 'Newest - recommendation',
         },
       ],
       sorting: 'added_des',
@@ -66,27 +69,28 @@ export default {
     };
   },
   computed: mapState({
-    albumsInListened: state => state.albumsInListened,
-    accessToken: state => state.accessToken,
+    recommendations: state => state.recommendations,
   }),
   async mounted() {
     const loader = Loading.service({
       fullscreen: true,
       background: 'rgba(0, 0, 0, 0.5)',
     });
-    await this.refreshAlbumsInListened();
+    await this.refreshRecommendations();
     const interval = setInterval(() => {
-      if (this.albumsInListened && this.albumsInListened.length >= 0) {
+      if (this.recommendations && this.recommendations.length >= 0) {
         clearInterval(interval);
-        this.albums = this.albumsInListened;
+        this.albums = this.recommendations;
         this.changeSorting();
         loader.close();
       }
     }, 800);
   },
   methods: {
-    updateAlbumsInListened(removedAlbumId) {
-      this.albums = this.albums.filter(album => album.id != removedAlbumId);
+    async update() {
+      await this.refreshRecommendations();
+      this.albums = this.recommendations;
+      this.changeSorting();
     },
     changeSorting() {
       switch (this.sorting) {
@@ -128,7 +132,7 @@ export default {
           break;
       }
     },
-    ...mapActions(['refreshAlbumsInListened']),
+    ...mapActions(['refreshRecommendations']),
   },
 };
 </script>
@@ -164,21 +168,6 @@ export default {
   background: none;
 }
 
-@media (max-width: 700px) {
-  .header > h1 {
-    margin-bottom: 0;
-  }
-}
-@media (min-width: 700px) {
-  .header {
-    > * {
-      grid-row: 1;
-    }
-    > h1 {
-      text-align: center;
-    }
-  }
-}
 @media (min-width: 1000px) {
   .album-grid {
     grid-template-columns: 1fr 1fr;

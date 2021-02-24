@@ -3,7 +3,6 @@
     <div class="card-body">
       <i class="el-icon-user" />
       <div class="friend-name">{{ user.username }}</div>
-
       <el-button
         v-if="inFriendsList"
         class="add-button"
@@ -70,8 +69,9 @@ export default {
 <style lang="scss" scoped>
 .card-body {
   display: grid;
-  grid-template-columns: 1fr 4fr auto;
+  grid-template-columns: 1fr 4fr 2fr;
   align-items: center;
+  grid-gap: 5px;
 }
 
 i {
@@ -88,12 +88,11 @@ i {
   position: relative;
 }
 .friend-name::before {
-  content: '';
   position: absolute;
-  left: 0;
+  right: 0;
   top: 0;
-  width: 100%;
+  width: 25px;
   height: 100%;
-  background: linear-gradient(90deg, transparent 150px, white);
+  background: linear-gradient(90deg, transparent, white);
 }
 </style>

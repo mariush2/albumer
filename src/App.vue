@@ -30,6 +30,10 @@
             <i class="el-icon-document-checked"></i>
             <span>Listened</span>
           </el-menu-item>
+          <el-menu-item index="4" @click="handleClick('/recommendations')">
+            <i class="el-icon-star-off"></i>
+            <span>Recommendations</span>
+          </el-menu-item>
         </el-menu>
         <li id="logout" @click="logOut">
           <i class="el-icon-unlock"></i>
@@ -66,6 +70,9 @@ export default {
           break;
         case '/listened':
           this.defaultActive = '3';
+          break;
+        case '/recommendations':
+          this.defaultActive = '4';
           break;
       }
     }, 200);
