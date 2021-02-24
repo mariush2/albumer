@@ -24,7 +24,7 @@
           </el-menu-item>
           <el-menu-item index="2" @click="handleClick('/list')">
             <i class="el-icon-document"></i>
-            <span>Current list</span>
+            <span>List</span>
           </el-menu-item>
           <el-menu-item index="3" @click="handleClick('/listened')">
             <i class="el-icon-document-checked"></i>

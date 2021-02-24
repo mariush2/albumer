@@ -7,16 +7,32 @@
     <div>
       <template v-if="searching">
         <div class="album-grid">
-          <template v-for="index in 8">
-            <Album-skeleton :key="index" />
-          </template>
+          <div>
+            <template v-for="index in 8">
+              <Album-skeleton :key="index" />
+            </template>
+          </div>
         </div>
       </template>
       <template v-else-if="albumsInSearch[0] != 'none'">
         <div class="album-grid">
-          <template v-for="(album, index) in albumsInSearch">
-            <Album :key="`album-${index}`" :album="album" />
-          </template>
+          <transition-group
+            name="stagger"
+            tag="div"
+            :css="false"
+            appear
+            @before-enter="beforeEnter"
+            @enter="enter"
+          >
+            <template v-for="(album, index) in albumsInSearch">
+              <Album
+                :key="`album-${index}`"
+                class="albums-item"
+                :data-index="index"
+                :album="album"
+              />
+            </template>
+          </transition-group>
         </div>
       </template>
       <template v-else-if="searchString.length > 0">
@@ -30,6 +46,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex';
+import Velocity from 'velocity-animate';
 
 import Album from '@/components/Album.vue';
 import AlbumSkeleton from '@/components/AlbumSkeleton.vue';
@@ -45,6 +62,7 @@ export default {
   data: function() {
     return {
       searchString: '',
+      renderedHits: 0,
     };
   },
   computed: mapState({
@@ -67,8 +85,20 @@ export default {
     window.removeEventListener('scroll', this.onScroll);
   },
   methods: {
+    beforeEnter: function(el) {
+      el.style.transform = 'translateX(200%)';
+    },
+    enter: async function(el, done) {
+      let delay = (el.dataset.index - this.renderedHits) * 150;
+      let vm = this;
+      setTimeout(function() {
+        Velocity(el, { transform: 'translateX(0)' }, { duration: 500, complete: done });
+        vm.renderedHits += 1;
+      }, delay);
+    },
     updateSearchString(searchString) {
       this.searchString = searchString;
+      this.renderedHits = 0;
     },
     onScroll({
       target: {
@@ -91,7 +121,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.album-grid {
+.album-grid > div {
   display: grid;
   grid-template-columns: 1fr;
   grid-gap: 12px;

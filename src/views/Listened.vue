@@ -1,7 +1,10 @@
 <template>
   <div class="content">
     <div class="header">
-      <h1 ref="title">Albums you've listened to so far, sorted by</h1>
+      <h1 ref="title">
+        <i class="el-icon-document-checked" />
+        Albums you've listened to
+      </h1>
       <el-select
         ref="sorting"
         v-model="sorting"
@@ -18,9 +21,15 @@
       </el-select>
     </div>
     <div class="album-grid">
-      <template v-for="(album, index) in albums">
-        <album :key="`${index}-${album.id}`" :album="album" @deleted="updateAlbumsInListened" />
-      </template>
+      <transition-group name="albums" tag="div" appear>
+        <album
+          v-for="album in albums"
+          :key="album.id"
+          class="albums-item"
+          :album="album"
+          @deleted="updateAlbumsInListened"
+        />
+      </transition-group>
     </div>
   </div>
 </template>
@@ -86,7 +95,8 @@ export default {
   },
   methods: {
     updateAlbumsInListened(removedAlbumId) {
-      this.albums = this.albums.filter(album => album.id != removedAlbumId);
+      const removeIndex = this.albums.findIndex(album => album.id == removedAlbumId);
+      this.albums.splice(removeIndex, 1);
     },
     changeSorting() {
       switch (this.sorting) {
@@ -150,7 +160,7 @@ export default {
   }
 }
 
-.album-grid {
+.album-grid > div {
   display: grid;
   grid-template-columns: 1fr;
   padding-top: 1rem;
@@ -183,5 +193,25 @@ export default {
   .album-grid {
     grid-template-columns: 1fr 1fr;
   }
+}
+
+.albums-item {
+  display: inline-block;
+  transition: all 1s;
+}
+.albums-move {
+  transition: transform 1s;
+}
+.albums-enter {
+  transform: translateX(100%);
+}
+.albums-leave-to {
+  transform: scaleY(0);
+  opacity: 0;
+}
+
+.albums-leave-active {
+  position: absolute;
+  transition: all 1s;
 }
 </style>
