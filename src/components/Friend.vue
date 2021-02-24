@@ -93,6 +93,6 @@ i {
   top: 0;
   width: 25px;
   height: 100%;
-  background: linear-gradient(90deg, transparent, white);
+  background: linear-gradient(90deg, transparent, #eff1f3);
 }
 </style>

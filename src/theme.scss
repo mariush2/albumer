@@ -1,9 +1,11 @@
 /* theme color */
-$--color-primary: #e04875;
+$--color-primary: #b65b6b;
 $--color-success: #48e06e;
 $--color-warning: #f29e5a;
 $--color-danger: #f97878;
 $--color-info: #78bff9;
+$--color-white: #eff1f3;
+$--color-black: #241715;
 
 /* icon font path, required */
 $--font-path: '~element-ui/lib/theme-chalk/fonts';
@@ -50,7 +52,7 @@ textarea {
 }
 .el-drawer__header,
 .el-menu-item i {
-  color: white;
+  color: #eff1f3;
 }
 
 .el-menu {

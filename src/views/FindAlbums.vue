@@ -15,12 +15,7 @@
       <template v-else-if="albumsInSearch[0] != 'none'">
         <div class="album-grid">
           <template v-for="(album, index) in albumsInSearch">
-            <Album
-              :key="`album-${index}`"
-              :album="album"
-              :albums-in-list="albumsInList"
-              :albums-in-listened="albumsInListened"
-            />
+            <Album :key="`album-${index}`" :album="album" />
           </template>
         </div>
       </template>
@@ -61,6 +56,7 @@ export default {
   mounted() {
     this.refreshAlbumsInList();
     this.refreshAlbumsInListened();
+    this.refreshFriendsList();
     this.refreshAccessToken();
   },
   created() {
@@ -88,6 +84,7 @@ export default {
       'refreshAlbumsInList',
       'refreshAlbumsInListened',
       'refreshAccessToken',
+      'refreshFriendsList',
     ]),
   },
 };

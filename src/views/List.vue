@@ -19,7 +19,7 @@
     </div>
     <div class="album-grid">
       <template v-for="(album, index) in albums">
-        <album-list :key="`${index}-${album.id}`" :album="album" @deleted="updateAlbumsInList" />
+        <album :key="`${index}-${album.id}`" :album="album" @deleted="updateAlbumsInList" />
       </template>
     </div>
   </div>
@@ -28,10 +28,10 @@
 <script>
 import { mapActions, mapState } from 'vuex';
 import { Loading } from 'element-ui';
-import AlbumList from '../components/AlbumList.vue';
+import Album from '../components/Album.vue';
 export default {
   name: 'List',
-  components: { AlbumList },
+  components: { Album },
   data: function() {
     return {
       albums: [],

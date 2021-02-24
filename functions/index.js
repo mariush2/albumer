@@ -161,6 +161,54 @@ app.post('/setUsername', async (req, res) => {
   }
 });
 
+app.post('/sendRecommendation', async (req, res) => {
+  const body = JSON.parse(req.body);
+  const recommendation = body.recommendation;
+  const recipient = body.recipient;
+
+  try {
+    let recommendations = [];
+    let albumsInList = [];
+    let albumsInListened = [];
+    await admin
+      .database()
+      .ref(`/recommendations/${recipient}`)
+      .once('value', function(snapshot) {
+        recommendations = snapshot.val() != null ? snapshot.val().albums : [];
+      });
+    await admin
+      .database()
+      .ref(`/list/${recipient}`)
+      .once('value', function(snapshot) {
+        albumsInList = snapshot.val() != null ? snapshot.val().albums : [];
+      });
+    await admin
+      .database()
+      .ref(`/listened/${recipient}`)
+      .once('value', function(snapshot) {
+        albumsInListened = snapshot.val() != null ? snapshot.val().albums : [];
+      });
+    if (recommendations.some(album => album.id == recommendation.id)) {
+      res.sendStatus(302);
+    } else if (albumsInListened.some(album => album.id == recommendation.id)) {
+      res.sendStatus(303);
+    } else if (albumsInList.some(album => album.id == recommendation.id)) {
+      res.sendStatus(304);
+    } else {
+      await admin
+        .database()
+        .ref(`/recommendations/${recipient}`)
+        .set({
+          albums: [...recommendations, recommendation],
+        });
+      res.sendStatus(200);
+    }
+  } catch (e) {
+    console.log(e);
+    res.sendStatus(403);
+  }
+});
+
 // This HTTPS endpoint can only be accessed by your Firebase Users.
 // Requests need to be authorized by providing an `Authorization` HTTP header
 // with value `Bearer <Firebase ID Token>`.
