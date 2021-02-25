@@ -20,10 +20,22 @@
         ></el-option>
       </el-select>
     </div>
-    <div class="album-grid">
-      <template v-for="(album, index) in albums">
-        <album-recommendation :key="`${index}-${album.id}`" :album="album" @updated="update" />
-      </template>
+    <div v-if="albums.length > 0" class="album-grid">
+      <transition-group name="albums" tag="div" appear>
+        <album-recommendation
+          v-for="album in albums"
+          :key="`${index}-${album.id}`"
+          :album="album"
+          @updated="update"
+        />
+      </transition-group>
+    </div>
+    <div v-else class="no-albums">
+      <p>
+        You don't have any albums in your
+        <br />
+        recommendations at the moment.
+      </p>
     </div>
   </div>
 </template>
@@ -154,7 +166,7 @@ export default {
   }
 }
 
-.album-grid {
+.album-grid > div {
   display: grid;
   grid-template-columns: 1fr;
   padding-top: 1rem;
@@ -168,9 +180,57 @@ export default {
   background: none;
 }
 
+.no-albums {
+  margin-top: 2rem;
+  > p {
+    color: white;
+    text-align: center;
+    font-size: 20px;
+    line-height: 40px;
+    > .link {
+      font-size: 20px;
+    }
+  }
+}
+
+@media (max-width: 700px) {
+  .header > h1 {
+    margin-bottom: 0;
+  }
+}
+@media (min-width: 700px) {
+  .header {
+    > * {
+      grid-row: 1;
+    }
+    > h1 {
+      text-align: center;
+    }
+  }
+}
 @media (min-width: 1000px) {
   .album-grid {
     grid-template-columns: 1fr 1fr;
   }
+}
+
+.albums-item {
+  display: inline-block;
+  transition: all 1s;
+}
+.albums-move {
+  transition: transform 1s;
+}
+.albums-enter {
+  transform: translateX(100%);
+}
+.albums-leave-to {
+  transform: scaleY(0);
+  opacity: 0;
+}
+
+.albums-leave-active {
+  position: absolute;
+  transition: all 1s;
 }
 </style>
