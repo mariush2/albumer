@@ -27,37 +27,46 @@
         </div>
       </div>
       <div class="actions">
-        <el-select
-          v-model="selectedFriend"
-          filterable
-          placeholder="Choose friend"
-          no-data-text="Add friends on the Profile page"
-        >
-          <el-option
-            v-for="friend in friendsList"
-            :key="friend.username"
-            :label="friend.username"
-            :value="friend.uid"
-          ></el-option>
-        </el-select>
-        <el-button
-          v-if="selectedFriend != null && !sending"
-          class="send-button"
-          plain
-          @click="sendRecommendation"
-        >
-          Send
-        </el-button>
-        <el-button
-          v-else-if="sending"
-          class="send-button"
-          plain
-          type="success"
-          disabled
-          icon="el-icon-loading"
-        >
-          Sending
-        </el-button>
+        <template v-if="friendsList.length > 0">
+          <el-select
+            v-model="selectedFriend"
+            filterable
+            placeholder="Choose friend"
+            no-data-text="Add friends on the Profile page"
+          >
+            <el-option
+              v-for="friend in friendsList"
+              :key="friend.username"
+              :label="friend.username"
+              :value="friend.uid"
+            ></el-option>
+          </el-select>
+          <el-button
+            v-if="selectedFriend != null && !sending"
+            class="send-button"
+            plain
+            @click="sendRecommendation"
+          >
+            Send
+          </el-button>
+          <el-button
+            v-else-if="sending"
+            class="send-button"
+            plain
+            type="success"
+            disabled
+            icon="el-icon-loading"
+          >
+            Sending
+          </el-button>
+        </template>
+        <template v-else>
+          <p>
+            Add friends on
+            <el-link class="link" icon="el-icon-user" href="/profile" type="info">Profile</el-link>
+            page
+          </p>
+        </template>
       </div>
     </div>
   </div>
@@ -199,6 +208,12 @@ export default {
   justify-content: center;
   height: fit-content;
   gap: 5px;
+
+  > p {
+    > .link {
+      font-size: 16px;
+    }
+  }
 }
 
 .back-button {

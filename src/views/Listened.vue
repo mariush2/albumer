@@ -20,7 +20,7 @@
         ></el-option>
       </el-select>
     </div>
-    <div class="album-grid">
+    <div v-if="albums.length > 0" class="album-grid">
       <transition-group name="albums" tag="div" appear>
         <album
           v-for="album in albums"
@@ -30,6 +30,15 @@
           @deleted="updateAlbumsInListened"
         />
       </transition-group>
+    </div>
+    <div v-else-if="!loading" class="no-albums">
+      <p>
+        You haven't checked any albums as listened yet,
+        <br />
+        head over to the
+        <el-link class="link" icon="el-icon-document" href="/list" type="info">List</el-link>
+        page
+      </p>
     </div>
   </div>
 </template>
@@ -90,6 +99,7 @@ export default {
         this.albums = this.albumsInListened;
         this.changeSorting();
         loader.close();
+        this.loading = false;
       }
     }, 800);
   },
@@ -172,6 +182,19 @@ export default {
 
 .select {
   background: none;
+}
+
+.no-albums {
+  margin-top: 2rem;
+  > p {
+    color: white;
+    text-align: center;
+    font-size: 24px;
+    line-height: 40px;
+    > .link {
+      font-size: 24px;
+    }
+  }
 }
 
 @media (max-width: 700px) {

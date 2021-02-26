@@ -14,7 +14,7 @@ export default new Vuex.Store({
     recommendations: [],
     nextUrl: '',
     searching: false,
-    limit: 5,
+    limit: 6,
     foundAll: false,
     confirmationResult: null,
   },
