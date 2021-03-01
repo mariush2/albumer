@@ -41,6 +41,10 @@
         </div>
       </template>
     </div>
+    <div v-if="foundAll" class="end">
+      <p>You've reached the end...</p>
+      <img src="@/assets/end.gif" />
+    </div>
   </div>
 </template>
 
@@ -66,6 +70,7 @@ export default {
     };
   },
   computed: mapState({
+    foundAll: state => state.foundAll,
     albumsInSearch: state => state.albumsInSearch,
     albumsInList: state => state.albumsInList,
     albumsInListened: state => state.albumsInListened,
@@ -105,7 +110,7 @@ export default {
         scrollingElement: { scrollTop, clientHeight, scrollHeight },
       },
     }) {
-      if (scrollTop + clientHeight >= scrollHeight) {
+      if (scrollTop + clientHeight >= scrollHeight - 250) {
         this.nextAlbums();
       }
     },
@@ -122,6 +127,7 @@ export default {
 
 <style lang="scss" scoped>
 .album-grid > div {
+  z-index: 1;
   display: grid;
   grid-template-columns: 1fr;
   grid-gap: 12px;
@@ -138,14 +144,28 @@ export default {
 .result-text {
   display: inline-block;
   font-size: 24px;
-  color: white;
+  color: #eff1f3;
 }
 
 .header {
   text-align: center;
-  color: white;
+  color: #eff1f3;
   margin: auto;
-  padding-top: 3rem;
+}
+
+.end {
+  display: flex;
+  justify-items: center;
+  align-items: center;
+  flex-direction: column;
+  color: #eff1f3;
+  > p {
+    margin-bottom: 1rem;
+    font-size: 22px;
+  }
+  > img {
+    width: 150px;
+  }
 }
 
 @media (max-width: 420px) {

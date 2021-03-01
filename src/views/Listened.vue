@@ -154,9 +154,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.content {
-  padding-top: 4rem;
-}
 .header {
   display: grid;
   align-items: center;
@@ -171,6 +168,7 @@ export default {
 }
 
 .album-grid > div {
+  z-index: 1;
   display: grid;
   grid-template-columns: 1fr;
   padding-top: 1rem;
