@@ -2,7 +2,7 @@
   <div class="content">
     <div class="header">
       <h1 ref="title">
-        <i class="el-icon-document-checked" />
+        <i class="el-icon-check" />
         Albums you've listened to
       </h1>
       <el-select

@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" :style="!mobileButtons ? 'padding-top: 3rem' : ''">
     <template v-if="$router.history.current.path != '/login'">
       <template v-if="mobileButtons">
         <div id="mobile-bar">
@@ -100,7 +100,7 @@ export default {
   },
   computed: {
     mobileButtons() {
-      return screen.width <= 560;
+      return screen.width <= 560 && window.matchMedia('(display-mode: standalone)').matches;
     },
   },
   mounted: function() {
