@@ -43,7 +43,7 @@
     </div>
     <div v-if="foundAll" class="end">
       <p>You've reached the end...</p>
-      <img src="@/assets/end.gif" />
+      <img src="@/assets/vinyl.png" />
     </div>
   </div>
 </template>
@@ -159,12 +159,15 @@ export default {
   align-items: center;
   flex-direction: column;
   color: #eff1f3;
+  margin-bottom: 1rem;
   > p {
     margin-bottom: 1rem;
     font-size: 22px;
   }
   > img {
-    width: 150px;
+    width: 180px;
+    /* 1.79s because 33.5 rpm in a vinyl */
+    animation: rotate 1.79s infinite linear;
   }
 }
 
@@ -176,6 +179,15 @@ export default {
 @media (min-width: 1000px) {
   .album-grid {
     grid-template-columns: 1fr 1fr;
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }
 </style>
