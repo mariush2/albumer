@@ -96,7 +96,7 @@ export default {
         this.changeSorting();
         loader.close();
       }
-    }, 800);
+    }, 200);
   },
   methods: {
     async update() {

@@ -91,7 +91,7 @@ export default {
         clearInterval(interval);
         loader.close();
       }
-    }, 800);
+    }, 200);
   },
   methods: {
     async logOut() {

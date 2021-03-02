@@ -103,7 +103,7 @@ export default {
         loader.close();
         this.loading = false;
       }
-    }, 800);
+    }, 200);
   },
   methods: {
     updateAlbumsInList(removedAlbumId) {
