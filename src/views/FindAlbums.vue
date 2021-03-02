@@ -41,6 +41,10 @@
         </div>
       </template>
     </div>
+    <div v-if="foundAll" class="end">
+      <p>You've reached the end...</p>
+      <img src="@/assets/vinyl.png" />
+    </div>
   </div>
 </template>
 
@@ -66,6 +70,7 @@ export default {
     };
   },
   computed: mapState({
+    foundAll: state => state.foundAll,
     albumsInSearch: state => state.albumsInSearch,
     albumsInList: state => state.albumsInList,
     albumsInListened: state => state.albumsInListened,
@@ -105,7 +110,7 @@ export default {
         scrollingElement: { scrollTop, clientHeight, scrollHeight },
       },
     }) {
-      if (scrollTop + clientHeight >= scrollHeight) {
+      if (scrollTop + clientHeight >= scrollHeight - 250) {
         this.nextAlbums();
       }
     },
@@ -122,6 +127,7 @@ export default {
 
 <style lang="scss" scoped>
 .album-grid > div {
+  z-index: 1;
   display: grid;
   grid-template-columns: 1fr;
   grid-gap: 12px;
@@ -138,14 +144,31 @@ export default {
 .result-text {
   display: inline-block;
   font-size: 24px;
-  color: white;
+  color: #eff1f3;
 }
 
 .header {
   text-align: center;
-  color: white;
+  color: #eff1f3;
   margin: auto;
-  padding-top: 3rem;
+}
+
+.end {
+  display: flex;
+  justify-items: center;
+  align-items: center;
+  flex-direction: column;
+  color: #eff1f3;
+  margin-bottom: 1rem;
+  > p {
+    margin-bottom: 1rem;
+    font-size: 22px;
+  }
+  > img {
+    width: 180px;
+    /* 1.79s because 33.5 rpm in a vinyl */
+    animation: rotate 1.79s infinite linear;
+  }
 }
 
 @media (max-width: 420px) {
@@ -156,6 +179,15 @@ export default {
 @media (min-width: 1000px) {
   .album-grid {
     grid-template-columns: 1fr 1fr;
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }
 </style>

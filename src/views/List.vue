@@ -2,7 +2,7 @@
   <div class="content">
     <div class="header">
       <h1 ref="title">
-        <i class="el-icon-document" />
+        <i class="el-icon-files" />
         Albums in your list
       </h1>
       <el-select
@@ -158,7 +158,6 @@ export default {
 <style lang="scss" scoped>
 .content {
   position: relative;
-  padding-top: 4rem;
 }
 .header {
   display: grid;
@@ -174,6 +173,7 @@ export default {
 }
 
 .album-grid > div {
+  z-index: 1;
   display: grid;
   grid-template-columns: 1fr;
   padding-top: 1rem;

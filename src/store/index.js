@@ -210,7 +210,6 @@ export default new Vuex.Store({
       const body = await response.json();
       let newAlbums = body.albums.items;
       let adding = [];
-      const currentLength = state.albumsInSearch.length;
       const currentAlbums = state.albumsInSearch.map(album => {
         return {
           id: album.id,
@@ -233,7 +232,7 @@ export default new Vuex.Store({
           adding.push(album);
         }
       }
-      if (adding.length > 0) {
+      if (adding.length > 0 && body.albums.next != null) {
         commit('addAlbums', { albumsInSearch: adding });
         commit('changeNextUrl', { next: body.albums.next });
       } else {

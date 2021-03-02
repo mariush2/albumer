@@ -1,45 +1,87 @@
 <template>
   <div id="app">
     <template v-if="$router.history.current.path != '/login'">
-      <div id="bar">
-        <el-button circle icon="el-icon-menu" size="medium" type="default" @click="drawer = true" />
-      </div>
-      <el-drawer :visible.sync="drawer" size="min-content" :show-close="false" direction="ltr">
-        <template slot="title">
-          <img class="drawer-title" src="@/assets/written_logo.svg" />
-        </template>
-        <el-menu
-          background-color="#b65b6b"
-          text-color="#fff"
-          active-text-color="#ffd04b"
-          :default-active="defaultActive"
-        >
-          <el-menu-item index="0" @click="handleClick('/profile')">
-            <i class="el-icon-user"></i>
-            <span>Profile</span>
-          </el-menu-item>
-          <el-menu-item index="1" @click="handleClick('/')">
-            <i class="el-icon-search"></i>
-            <span>Find albums</span>
-          </el-menu-item>
-          <el-menu-item index="2" @click="handleClick('/list')">
-            <i class="el-icon-document"></i>
-            <span>List</span>
-          </el-menu-item>
-          <el-menu-item index="3" @click="handleClick('/listened')">
-            <i class="el-icon-document-checked"></i>
-            <span>Listened</span>
-          </el-menu-item>
-          <el-menu-item index="4" @click="handleClick('/recommendations')">
-            <i class="el-icon-star-off"></i>
-            <span>Recommendations</span>
-          </el-menu-item>
-        </el-menu>
-        <li id="logout" @click="logOut">
-          <i class="el-icon-unlock"></i>
-          <span>Log out</span>
-        </li>
-      </el-drawer>
+      <template v-if="mobileButtons">
+        <div id="mobile-bar">
+          <el-button
+            :class="activeColor('/profile')"
+            icon="el-icon-user"
+            type="primary"
+            @click="handleClick('/profile')"
+          />
+          <el-button
+            :class="activeColor('/')"
+            icon="el-icon-search"
+            type="primary"
+            @click="handleClick('/')"
+          />
+          <el-button
+            :class="activeColor('/list')"
+            icon="el-icon-files"
+            type="primary"
+            @click="handleClick('/list')"
+          />
+          <el-button
+            :class="activeColor('/listened')"
+            icon="el-icon-check"
+            type="primary"
+            @click="handleClick('/listened')"
+          />
+          <el-button
+            :class="activeColor('/recommended')"
+            icon="el-icon-receiving"
+            type="primary"
+            @click="handleClick('/recommendations')"
+          />
+        </div>
+      </template>
+      <template v-else>
+        <div id="bar">
+          <el-button
+            circle
+            icon="el-icon-menu"
+            size="medium"
+            type="default"
+            @click="drawer = true"
+          />
+        </div>
+        <el-drawer :visible.sync="drawer" size="min-content" :show-close="false" direction="ltr">
+          <template slot="title">
+            <img class="drawer-title" src="@/assets/written_logo.svg" />
+          </template>
+          <el-menu
+            background-color="#b65b6b"
+            text-color="#fff"
+            active-text-color="#ffd04b"
+            :default-active="defaultActive"
+          >
+            <el-menu-item index="0" @click="handleClick('/profile')">
+              <i class="el-icon-user"></i>
+              <span>Profile</span>
+            </el-menu-item>
+            <el-menu-item index="1" @click="handleClick('/')">
+              <i class="el-icon-search"></i>
+              <span>Find albums</span>
+            </el-menu-item>
+            <el-menu-item index="2" @click="handleClick('/list')">
+              <i class="el-icon-files"></i>
+              <span>List</span>
+            </el-menu-item>
+            <el-menu-item index="3" @click="handleClick('/listened')">
+              <i class="el-icon-check"></i>
+              <span>Listened</span>
+            </el-menu-item>
+            <el-menu-item index="4" @click="handleClick('/recommendations')">
+              <i class="el-icon-receiving"></i>
+              <span>Recommendations</span>
+            </el-menu-item>
+          </el-menu>
+          <li id="logout" @click="logOut">
+            <i class="el-icon-unlock"></i>
+            <span>Log out</span>
+          </li>
+        </el-drawer>
+      </template>
     </template>
     <router-view></router-view>
   </div>
@@ -55,6 +97,11 @@ export default {
       drawer: false,
       defaultActive: '1',
     };
+  },
+  computed: {
+    mobileButtons() {
+      return screen.width <= 560;
+    },
   },
   mounted: function() {
     setTimeout(() => {
@@ -78,6 +125,10 @@ export default {
     }, 200);
   },
   methods: {
+    activeColor(route) {
+      if (route === this.$router.history.current.path) return 'active';
+      return '';
+    },
     handleClick(newRoute) {
       if (!this.isActive(newRoute)) {
         this.$router.push(newRoute);
@@ -123,9 +174,37 @@ body {
 }
 
 #app {
-  padding-bottom: 2rem;
+  padding-bottom: 4rem;
+  overflow: hidden;
 }
 
+#mobile-bar {
+  position: fixed;
+  border-top: 1px solid transparentize(#eff1f3, 0.6);
+  background: #b65b6b;
+  z-index: 1000;
+  width: 100%;
+  left: 0;
+  bottom: 0;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  justify-items: center;
+  text-align: center;
+  align-items: center;
+  height: 3rem;
+
+  > button {
+    font-size: 22px;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .active {
+    color: #ffd04b;
+  }
+}
 #bar {
   position: fixed;
   z-index: 1000;

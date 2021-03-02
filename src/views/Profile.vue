@@ -3,6 +3,9 @@
     <div class="header">
       <i class="el-icon-user"></i>
       <h1>Profile</h1>
+      <el-button class="logout" icon="el-icon-unlock" type="primary" @click="logOut">
+        Log out
+      </el-button>
     </div>
     <div class="username">
       <UsernameInput />
@@ -91,6 +94,10 @@ export default {
     }, 800);
   },
   methods: {
+    async logOut() {
+      await auth.signOut();
+      this.$router.push('/login');
+    },
     updateFriendsearch(newList) {
       this.friendSearch = newList;
     },
@@ -109,9 +116,12 @@ export default {
   > .header {
     display: flex;
     align-items: center;
-    margin-top: 4rem;
     color: white;
 
+    > .logout {
+      position: absolute;
+      right: 0;
+    }
     > i {
       font-size: 32px;
     }
