@@ -182,6 +182,7 @@ body {
   position: fixed;
   border-top: 1px solid transparentize(#eff1f3, 0.6);
   background: #b65b6b;
+  padding-bottom: 2rem;
   z-index: 1000;
   width: 100%;
   left: 0;
