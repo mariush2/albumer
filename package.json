@@ -14,7 +14,7 @@
     "core-js": "^3.3.2",
     "element-ui": "^2.15.0",
     "firebase": "^7.16.1",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.21",
     "register-service-worker": "^1.6.2",
     "roboto-fontface": "*",
     "velocity-animate": "^1.5.2",
